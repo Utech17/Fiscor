@@ -73,34 +73,43 @@ if (isset($_GET['Volver'])) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                                if (isset($data) && is_array($data)) {
-                                    foreach ($data as $row) {
-                                        if (is_array($row)) {
-                                            $row['monto_presupuesto'] = 0.00; if( isset( $dataPresupuesto[$row['ID_Categoria']] )) $row['monto_presupuesto'] = array_sum( $dataPresupuesto[$row['ID_Categoria']] );
-                                            $row['monto_gastado'] = 0.00; if( isset( $dataGasto[$row['ID_Categoria']] )) $row['monto_gastado'] = array_sum( $dataGasto[$row['ID_Categoria']] );
-                                            $claseGastado = $row['monto_gastado'] > $row['monto_presupuesto'] ? 'bg-danger text-white' : 'bg-success text-white';
-
-                                            echo "<tr>";
-                                            $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
-                                            echo "<td>" . htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') . "</td>";
-                                            echo "<td>" . htmlspecialchars($row['Nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                            echo "<td>". number_format( $row['monto_presupuesto'], 2) ."</td>";
-                                            echo "<td class='$claseGastado'>". number_format( $row['monto_gastado'], 2) ."</td>";
-                                            echo "<td>
-                                                    <a href='../controlador/item_controlador.php?idCategoria=".$row['ID_Categoria']."&idProyecto=".$idProyecto."' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
-                                                    <a onClick='buscarCategoria(this)' class='btn-azul' data-id='".$row['ID_Categoria']."' data-nombre='".$row['Nombre']."' data-estado='".$row['Estado']."'><img src='../vista/img/editar.png' alt='editar'></a>
-                                                    <a href='?eliminarId=".$row['ID_Categoria']."&idProyecto=".$idProyecto."' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                                </td>";
-                                            echo "</tr>";
-                                        } else {
-                                            echo "<tr><td colspan='3'>Dato incorrecto en la fila.</td></tr>";
+                        <?php
+                            if (isset($data) && is_array($data)) {
+                                foreach ($data as $row) {
+                                    if (is_array($row)) {
+                                        $row['monto_presupuesto'] = 0.00;
+                                        if (isset($dataPresupuesto[$row['ID_Categoria']])) {
+                                            $row['monto_presupuesto'] = array_sum($dataPresupuesto[$row['ID_Categoria']]);
                                         }
+                                        $row['monto_gastado'] = 0.00;
+                                        if (isset($dataGasto[$row['ID_Categoria']])) {
+                                            $row['monto_gastado'] = array_sum($dataGasto[$row['ID_Categoria']]);
+                                        }
+                                        // Define el estilo para la celda basado en la comparación entre monto gastado y presupuesto
+                                        $borderStyle = ($row['monto_gastado'] > $row['monto_presupuesto']) 
+                                            ? 'border-bottom: 2px solid red; color: red;' 
+                                            : 'border-bottom: 2px solid green; color: green;';
+
+                                        echo "<tr>";
+                                        $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
+                                        echo "<td>" . htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['Nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                        echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
+                                        echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
+                                        echo "<td>
+                                                <a href='../controlador/item_controlador.php?idCategoria=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
+                                                <a onClick='buscarCategoria(this)' class='btn-azul' data-id='" . $row['ID_Categoria'] . "' data-nombre='" . $row['Nombre'] . "' data-estado='" . $row['Estado'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
+                                                <a href='?eliminarId=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
+                                            </td>";
+                                        echo "</tr>";
+                                    } else {
+                                        echo "<tr><td colspan='3'>Dato incorrecto en la fila.</td></tr>";
                                     }
-                                } else {
-                                    echo "<tr><td colspan='3'>No hay datos disponibles.</td></tr>";
                                 }
-                            ?>
+                            } else {
+                                echo "<tr><td colspan='3'>No hay datos disponibles.</td></tr>";
+                            }
+                        ?>
                         </tbody>
                         <tfoot>
                             <tr>
@@ -181,7 +190,6 @@ if (isset($_GET['Volver'])) {
                         ?></div>
     <?php
     endif; ?>
-
     <script>
         // JavaScript para mostrar el toast
         window.onload = function() {
