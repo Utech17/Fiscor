@@ -2,10 +2,8 @@
 require_once("../modelo/presupuesto_modelo.php");
 
 $objPresupuesto = new PresupuestoModelo();
-$idRol = isset($_SESSION['ID_Rol']) ? $_SESSION['ID_Rol'] : 0;
-$message = null;
 
-if (isset($_POST['Enviar'])) {
+if(isset($_POST['Enviar'])){
     echo "<script>console.log('Conectado')</script>";
 
     $objPresupuesto->set_iditem($_POST['item_seleccionado']);
@@ -13,25 +11,25 @@ if (isset($_POST['Enviar'])) {
     $objPresupuesto->set_cantidad($_POST['cantidad']);
     $objPresupuesto->set_montopresupuesto($_POST['presupuesto']);
     echo "<script>console.log('Conectado2')</script>";
-
-    $result = $objPresupuesto->incluir();
+    
+    $result=$objPresupuesto->incluir();
 
     if ($result == 1) {
-        $message = "Presupuesto agregado con éxito";
+        echo "<script>alert('Presupuesto agregado con éxito');location.href='../controlador/item_controlador.php';</script>";
     } else {
-        $message = "Error al agregar presupuesto";
+        echo "<script>alert('Error al agregar presupuesto');</script>";
     }
 }
 
-if (isset($_GET['eliminarId'])) {
-
+if (isset($_GET['eliminarId'])){
+			
     $objPresupuesto->set_iditem($_GET['eliminarId']);
 
-    if ($objPresupuesto->eliminar()) {
-        $message = "Registro Eliminado con éxito";
+    if($objPresupuesto->eliminar()){
+        echo "<script>alert('Registro Eliminado con éxito');location.href='../controlador/item_controlador.php'; </script>";
+        
     } else {
-
-        $message = "No se pudo Eliminar";
+        echo "<script>alert('No se pudo Eliminar')</script>";
     }
 }
 
@@ -40,15 +38,17 @@ if (isset($_POST['editarId'])) {
         $objItem->set_iditem($_POST['editarId']); // Asegúrate de utilizar editarId aquí
         $objItem->set_nombre($_POST['editarNombre']);
         $objItem->set_estado($_POST['editarEstado']);
-
+        
         $resultado = $objItem->modificar();
-
+        
         if ($resultado) {
-            $message = "item actualizado con éxito";
+            echo "<script>alert('item actualizado con éxito');location.href='../controlador/item_controlador.php';</script>";
         } else {
-            $message = "Error al actualizar item";
+            echo "<script>alert('Error al actualizar item');</script>";
         }
     } else {
-        $message = "Faltan datos para actualizar el item";
+        echo "<script>alert('Faltan datos para actualizar el item');</script>";
     }
 }
+
+?>

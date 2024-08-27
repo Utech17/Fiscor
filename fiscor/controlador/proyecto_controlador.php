@@ -2,12 +2,12 @@
 require_once("../modelo/proyecto_modelo.php");
 $message = null;
 $objProyecto = new Proyecto();
+
 $data = $objProyecto->buscarTodos();
 $dataAux = $objProyecto->buscarPresupuesto();
-$dataPresupuesto = array();
-foreach ($dataAux as $c) {
-    $dataPresupuesto[$c['id_proyecto']][] = $c['monto_presupuesto'];
-}
+$dataPresupuesto = array(); foreach($dataAux as $c ){ $dataPresupuesto[ $c['id_proyecto'] ][] = $c['monto_presupuesto']; }
+$dataAux = $objProyecto->obtenerListaGastos();
+$dataGasto = array(); foreach($dataAux as $c ){ $dataGasto[ $c['ID_Proyecto'] ][] = $c['Monto_Gasto']; }
 
 require_once("vista_controlador.php");
 $idRol = isset($_SESSION['ID_Rol']) ? $_SESSION['ID_Rol'] : 0;

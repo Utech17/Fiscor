@@ -121,23 +121,25 @@ if (isset($_GET['Volver'])) {
                             </thead>
                             <tbody>
                                 <?php
-                                if (isset($data) && is_array($data)) {
-                                    foreach ($data as $row) {
-                                        echo "<tr>";
-                                        echo "<td>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</td>";
-                                        echo "<td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                        echo "<td>" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                        echo "<td>" . htmlspecialchars($row['monto_presupuesto'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                        echo "<td>0.00</td>";
-                                        echo "<td>
-                                                <a onClick='buscarItem(this)' class='btn-azul me-2' data-id='" . $row['id_item'] . "' data-nombre='" . $row['nombre'] . "' data-estado='" . $row['estado'] . "' data-cantidad='" . $row['cantidad'] . "' data-presupuesto='" . $row['monto_presupuesto'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
-                                                <a href='?eliminarId=" . $row['id_item'] . "&idProyecto=" . $idProyecto . "&idCategoria=" . $idCategoria . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                            </td>";
-                                        echo "</tr>";
+                                    if (isset($data) && is_array($data)) {
+                                        foreach ($data as $row) {
+                                            $row['monto_gastado'] = 0.00; if( isset( $dataGasto[$row['id_item']] )) $row['monto_gastado'] = array_sum( $dataGasto[$row['id_item']] );
+                                            $claseGastado = $row['monto_gastado'] > $row['monto_presupuesto'] ? 'bg-danger text-white' : 'bg-success text-white';
+
+                                            echo "<tr>";
+                                            echo "<td>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</td>";
+                                            echo "<td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                            echo "<td>" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                            echo "<td>" . number_format( $row['monto_presupuesto'], 2) . "</td>";
+                                            echo "<td class='$claseGastado'>". number_format( $row['monto_gastado'], 2) ."</td>";
+                                            echo "<td>
+                                                    <a onClick='buscarItem(this)' class='btn-azul' data-id='".$row['id_item']."' data-nombre='".$row['nombre']."' data-estado='".$row['estado']."' data-cantidad='".$row['cantidad']."' data-presupuesto='".$row['monto_presupuesto']."'><img src='../vista/img/editar.png' alt='editar'></a>
+                                                    <a href='?eliminarId=".$row['id_item']."&idProyecto=".$idProyecto."&idCategoria=".$idCategoria."' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a></td>";
+                                            echo "</tr>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
                                     }
-                                } else {
-                                    echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
-                                }
                                 ?>
                             </tbody>
                         </table>

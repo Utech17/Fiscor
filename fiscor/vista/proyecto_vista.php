@@ -122,29 +122,29 @@ if (isset($_GET['Volver'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
+                            <?php
                                 if (isset($data) && is_array($data)) {
                                     foreach ($data as $row) {
-                                        $row['monto_presupuesto'] = 0.00;
-                                    if (isset($dataPresupuesto[$row['ID_Proyecto']])) $row['monto_presupuesto'] = array_sum($dataPresupuesto[$row['ID_Proyecto']]);
-
+                                        $row['monto_presupuesto'] = 0.00; if( isset( $dataPresupuesto[$row['ID_Proyecto']] )) $row['monto_presupuesto'] = array_sum( $dataPresupuesto[$row['ID_Proyecto']] );
+                                        $row['monto_gastado'] = 0.00; if( isset( $dataGasto[$row['ID_Proyecto']] )) $row['monto_gastado'] = array_sum( $dataGasto[$row['ID_Proyecto']] );
+                                        $claseGastado = $row['monto_gastado'] > $row['monto_presupuesto'] ? 'bg-danger text-white' : 'bg-success text-white';
                                         echo "<tr>";
-                                        $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
-                                        echo "<td>" . $estado . "</td>";
-                                        echo "<td>" . $row['Nombre'] . "</td>";
-                                        echo "<td>" . $row['Descripcion'] . "</td>";
-                                        echo "<td>" . $row['monto_presupuesto'] . "</td>";
-                                        echo "<td>0.00</td>";
-                                        echo "<td>
-                                                <a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
-                                                <a onClick='buscarProyecto(this)' class='btn-azul' data-id='" . $row['ID_Proyecto'] . "' data-estado='" . $row['Estado'] . "' data-nombre='" . $row['Nombre'] . "' data-descripcion='" . $row['Descripcion'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
-                                                <a href='?eliminarId=" . $row['ID_Proyecto'] . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
+                                            $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
+                                            echo "<td>" . $estado . "</td>";
+                                            echo "<td>" . $row['Nombre'] . "</td>";
+                                            echo "<td>" . $row['Descripcion'] . "</td>";
+                                            echo "<td>". number_format( $row['monto_presupuesto'], 2) ."</td>";
+                                            echo "<td class='$claseGastado'>". number_format( $row['monto_gastado'], 2) ."</td>";
+                                            echo "<td>
+                                                <a href='../controlador/categoria_controlador.php?idProyecto=".$row['ID_Proyecto']."' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
+                                                <a onClick='buscarProyecto(this)' class='btn-azul' data-id='".$row['ID_Proyecto']."' data-estado='".$row['Estado']."' data-nombre='".$row['Nombre']."' data-descripcion='".$row['Descripcion']."'><img src='../vista/img/editar.png' alt='editar'></a>
+                                                <a href='?eliminarId=".$row['ID_Proyecto']."' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
                                             </td>";
                                         echo "</tr>";
                                     }
                                 } else
                                     echo "<tr><td colspan='4'>No hay datos disponibles.</td></tr>";
-                                ?>
+                            ?>
                             </tbody>
                             <tfoot>
                                 <tr>

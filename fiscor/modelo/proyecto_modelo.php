@@ -139,4 +139,16 @@ class Proyecto {
             return 0;
         }
     }
+
+    public function obtenerListaGastos() {
+        try {
+            $sql = "SELECT * FROM gasto";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error al buscar todos los gastos: " . $e->getMessage(), 0);
+            return array();
+        }
+    }
 }

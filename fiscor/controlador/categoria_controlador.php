@@ -25,10 +25,10 @@
 
     $data = $objCategoria->buscarCategoriaPorIDProyecto($idProyecto);
     $dataAux = $objCategoria->buscarPresupuestoPorIDProyecto();
-    $dataPresupuesto = array();
-    foreach ($dataAux as $c) {
-        $dataPresupuesto[$c['id_categoria']][] = $c['monto_presupuesto'];
-    }
+    $dataPresupuesto = array(); foreach($dataAux as $c ){ $dataPresupuesto[ $c['ID_Categoria'] ][] = $c['monto_presupuesto']; }
+    $dataAux = $objCategoria->obtenerListaGastos();
+    $dataGasto = array(); foreach($dataAux as $c ){ $dataGasto[ $c['ID_Categoria'] ][] = $c['Monto_Gasto']; }
+
 
     // Obtener todas las categorías
     $Categorias = $objCategoria->buscarCategoriasNoRelacionadas($idProyecto);

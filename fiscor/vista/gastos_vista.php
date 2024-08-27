@@ -107,126 +107,125 @@ if (isset($_GET['Volver'])) {
         <div id="toast"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
     <div class="container">
-        <div class="contenedor-categoria px-6 pt-5">
+    <div class="contenedor-categoria px-6 pt-5">
+            <div class="col-sm-12">
+                <a href="#" class="modal_abrir btn btn-primary" onClick="agregarGasto();"> <i class="fa-solid fa-plus"></i> Agregar Gasto</a>
+            </div>
             <div id="tabla_div">
                 <div class="row">
-                    <div class="col-sm-3">
-                        <label>Selecciona una fecha</label>
-                        <input type="date" class="form-control" id="editarFecha" name="editarFecha">
+                    <div class="col-sm-2">
+                        <label>Fecha desde</label>
+                        <input type="date" class="form-control" id="filtroFechaD" onChange="cambiarFiltro()">
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Fecha hasta</label>
+                        <input type="date" class="form-control" id="filtroFechaH" onChange="cambiarFiltro()">
                     </div>
                     <div class="col-sm-2">
                         <label>Proyecto</label>
-                        <select id="idproyecto" name="idproyecto" class="form-control form-control-sm">
-                            <option value="0">-- Ninguna --</option>
-                            <?php foreach ($lista_proyectos as $proyecto) { ?>
-                                <option value="<?php echo $proyecto['id_proyecto']; ?>"><?php echo $proyecto['nombre']; ?></option>
+                        <select id="filtroProyecto" class="form-control form-control-sm" onChange="cambiarFiltroProyecto(this.value)">
+                            <option value="0">-- Todos --</option>
+                            <?php foreach ($lista_proyectos as $id => $nombre) { ?>
+                                <option value="<?php echo $id; ?>"><?php echo $nombre; ?></option>
                             <?php } ?>
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Categoría</label>
-                        <select id="idcategoria" name="idcategoria" class="form-control form-control-sm">
-                            <option value="0">-- Ninguna --</option>
-                            <?php foreach ($lista_categorias as $categoria) { ?>
-                                <option value="<?php echo $categoria['id_categoria']; ?>"><?php echo $categoria['nombre']; ?></option>
-                            <?php } ?>
+                        <select id="filtroCategoria" class="form-control form-control-sm" onChange="cambiarFiltroCategoria(this.value)">
+                            <option value="0">-- Todos --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Ítem</label>
+                        <select id="filtroItem" class="form-control form-control-sm" onChange="cambiarFiltro()">
+                            <option value="0">-- Todos --</option>
                         </select>
                     </div>
                     <br>
-                    <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary"> <i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
-                    </div>
-                    <br>
-                    <div class="col-sm-3">
-                        <a href="#" class="modal_abrir btn btn-primary" onClick="agregarItem();"> <i class="fa-solid fa-plus"></i> Agregar Gasto</a>
-                    </div>
                 </div>
                 <br>
-                <div class="table-container"> 
-                    <table id="tabla" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Item</th>
-                                <th>Monto</th>
-                                <th>Categoría</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            if (isset($data) && is_array($data)) {
-                                foreach ($data as $row) {
-                                    echo "<tr>";
+                <table id="tabla" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Item</th>
+                            <th>Monto</th>
+                            <th>Proyecto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaDataGasto">
+                        <?php
+                        if (isset($data) && is_array($data)) {
+                            foreach ($data as $row) {
+                                $proyecto = isset($lista_proyectos[ $row['ID_Proyecto'] ]) ? $lista_proyectos[ $row['ID_Proyecto'] ] : '';
+                                $item = ''; foreach($lista_items as $c){
+                                    if($c['id_item'] == $row['ID_Item']) $item = $c['nombre'];
+                                }
+                                echo "<tr>";
                                     echo "<td>" . $row['Fecha'] . "</td>";
-                                    echo "<td>" . $row['ID_Item'] . "</td>";
+                                    echo "<td>" . $item . "</td>";
                                     echo "<td>" . $row['Monto_Gasto'] . "</td>";
-                                    echo "<td>" . $row['ID_Categoria'] . "</td>";
+                                    echo "<td>" . $proyecto . "</td>";
                                     echo "<td>
-                                            <button class='editarGasto btn-azul' data-id='" . $row['ID_Gasto'] . "' data-id_proyecto='" . $row['ID_Proyecto'] . "' data-id_item='" . $row['ID_Item'] . "' data-id_usuario='" . $row['ID_Usuario'] . "' data-fecha='" . $row['Fecha'] . "' data-monto_gasto='" . $row['Monto_Gasto'] . "' data-comprobante='" . $row['Comprobante'] . "' data-observacion='" . $row['Observacion'] . "'>
-                                                <img src='../vista/img/editar.png' alt='editar'>
-                                            </button> 
-                                            | 
-                                            <a href='?eliminarId=" . $row['ID_Gasto'] . "'>
-                                                <button class='btn-rojo'>
-                                                    <img src='../vista/img/eliminar.png' alt='eliminar'>
-                                                </button>
+                                            <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . $row['ID_Gasto'] . "'>
+                                                <img src='../vista/img/eliminar.png' alt='eliminar'>
                                             </a>
                                         </td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='5'>No hay datos disponibles.</td></tr>";
+                                echo "</tr>";
                             }
-                            ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                        } else {
+                            echo "<tr><td colspan='5'>No hay datos disponibles.</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>
 
-    <section id="modalItem" class="modal_section">
+    <section id="modalGasto" class="modal_section modalGasto">
         <div class="modal__contenedor">
             <form id="gastoForm" action="" method="POST">
+                <?php if(isset($_GET['ps'])){ ?>
+                    <div class="alert alert-danger">
+                        <b>Advertencia</b>: Se ha superado el límite de presupuesto. Inicie una auditoría y realice un seguimiento del proyecto para asegurar un control adecuado de los recursos.
+                    </div>
+                <?php } ?>
+                <input type="hidden" id="gastoId" name="gastoId">
                 <div class="form-group">
                     <label>Proyecto</label>
-                    <select id="idproyecto" name="idproyecto" class="form-control form-control-sm">
+                    <select id="idproyecto" name="idproyecto" class="form-control form-control-sm" onChange="seleccionarProyecto(this.value)">
                         <option value="0">-- Selecciona --</option>
-                        <?php foreach ($lista_proyectos as $proyecto) { ?>
-                            <option value="<?php echo $proyecto['id_proyecto']; ?>"><?php echo $proyecto['nombre']; ?></option>
+                        <?php foreach ($lista_proyectos as $id => $nombre) { ?>
+                            <option value="<?php echo $id; ?>"><?php echo $nombre; ?></option>
                         <?php } ?>
                     </select>
-                </div>
+                </div> 
                 <div class="form-group">
                     <label>Categoría</label>
-                    <select id="idcategoria" name="idcategoria" class="form-control form-control-sm">
+                    <select id="idcategoria" name="idcategoria" class="form-control form-control-sm" onChange="seleccionarCategoria(this.value)">
                         <option value="0">-- Selecciona --</option>
-                        <?php foreach ($lista_categorias as $categoria) { ?>
-                            <option value="<?php echo $categoria['id_categoria']; ?>"><?php echo $categoria['nombre']; ?></option>
-                        <?php } ?>
                     </select>
-                </div>
+                </div> 
                 <div class="form-group">
                     <label>Ítem</label>
                     <select id="iditem" name="iditem" class="form-control form-control-sm">
                         <option value="0">-- Selecciona --</option>
-                        <?php foreach ($lista_items as $item) { ?>
-                            <option value="<?php echo $item['id_item']; ?>"><?php echo $item['nombre']; ?></option>
-                        <?php } ?>
                     </select>
-                </div>
+                </div> 
                 <div class="form-group">
                     <label for="fecha">Fecha</label>
                     <input type="date" id="fecha" name="fecha" class="form-control form-control-sm">
                 </div>
                 <div class="form-group">
                     <label for="montogasto">Monto</label>
-                    <input type="number" id="montogasto" name="montogasto" class="form-control form-control-sm">
+                    <input type="text" id="montogasto" name="montogasto" class="form-control form-control-sm" onkeydown="allowOnlyFloat(event)" oninput="validateFloatInput(this)">
                 </div>
                 <div class="form-group">
                     <label for="comprobante">Comprobante</label>
@@ -234,7 +233,7 @@ if (isset($_GET['Volver'])) {
                 </div>
                 <div class="form-group">
                     <label for="observacion">Observación</label>
-                    <input type="text" id="observacion" name="observacion" class="form-control form-control-sm">
+                    <textarea id="observacion" name="observacion" class="form-control form-control-sm"></textarea>
                 </div>
 
                 <div class="modal__botones-contenedor">
@@ -244,42 +243,15 @@ if (isset($_GET['Volver'])) {
             </form>
         </div>
     </section>
-
-    <section class="modal_section modal_section_editar">
+    <section id="modalEliminar" class="modal_section modalGasto">
         <div class="modal__contenedor">
-            <form id="formEditarGasto" action="" method="POST">
-                <input type="hidden" id="editarId" name="editarId">
-                <div class="form-group">
-                    <label for="editarID_Proyecto">Proyecto</label>
-                    <input type="text" class="form-control" id="editarID_Proyecto" name="editarID_Proyecto">
-                </div>
-                <div class="form-group">
-                    <label for="editarID_Categoria">Categoría</label>
-                    <input type="text" class="form-control" id="editarID_Categoria" name="editarID_Categoria">
-                </div>
-                <div class="form-group">
-                    <label for="editarID_Item">Item</label>
-                    <input type="text" class="form-control" id="editarID_Item" name="editarID_Item">
-                </div>
-                <div class="form-group">
-                    <label for="editarFecha">Fecha</label>
-                    <input type="date" class="form-control" id="editarFecha" name="editarFecha">
-                </div>
-                <div class="form-group">
-                    <label for="editarMonto_Gasto">Monto</label>
-                    <input type="number" class="form-control" id="editarMonto_Gasto" name="editarMonto_Gasto">
-                </div>
-                <div class="form-group">
-                    <label for="editarComprobante">Comprobante</label>
-                    <input type="text" class="form-control" id="editarComprobante" name="editarComprobante">
-                </div>
-                <div class="form-group">
-                    <label for="editarObservacion">Observación</label>
-                    <input type="text" class="form-control" id="editarObservacion" name="editarObservacion">
-                </div>
+            <form id="gastoEliminarForm" action="" method="POST">
+                <input type="hidden" id="eliminarId" name="eliminarId">
+                <b>¿Estás seguro que deseas eliminar el Gasto?</b><br><br>
+                Una vez realizado el proceso de eliminación no podrás recuperar el contenido ni la información existente.<br><br>
                 <div class="modal__botones-contenedor">
                     <input type="button" value="Cancelar" class="btn btn-secondary" onClick="cerrarModal()">
-                    <input id="buttonSubmit" type="submit" name="Enviar" class="btn btn-primary">
+                    <input id="buttonEliminar" type="submit" name="Confirmar" class="btn btn-primary">
                 </div>
             </form>
         </div>
@@ -290,6 +262,19 @@ if (isset($_GET['Volver'])) {
                         ?></div>
     <?php
     endif; ?>
+    <script>
+        let listaGasto = <?php echo json_encode($data); ?>;
+        let listaProyecto = <?php echo json_encode($lista_proyectos); ?>;
+        let listaCategoria = <?php echo json_encode($lista_categorias); ?>;
+        let listaItem = <?php echo json_encode($lista_items); ?>;
+        let listaPresupuesto = <?php echo json_encode($lista_presupuesto); ?>;
+    </script>
+    
+    <script>
+        if( existeParametroGet('modalOn') ){ // Si acaba de agregar, volver a abrir modal
+            agregarGasto();
+        }
+    </script>
     <script>
         // JavaScript para mostrar el toast
         window.onload = function() {

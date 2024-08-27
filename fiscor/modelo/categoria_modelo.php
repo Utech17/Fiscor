@@ -176,5 +176,18 @@
         public function getLastInsertedID() {
             return $this->conexion->lastInsertId();
         }
+
+        public function obtenerListaGastos() {
+            try {
+                $sql = "SELECT item.id_item, item.ID_Categoria, gasto.Monto_Gasto FROM item, gasto WHERE gasto.ID_Proyecto = :ID_Proyecto && item.id_item = gasto.ID_Item";
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->bindParam(':ID_Proyecto', $this->ID_Proyecto);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                error_log("Error al buscar todos los Proyectos: " . $e->getMessage(), 0);
+                return array();
+            }
+        }
     }
 ?>

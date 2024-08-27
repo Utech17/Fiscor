@@ -42,7 +42,11 @@
     }
 
     $data = $objItem->buscarItemsConPresupuesto($idProyecto, $idCategoria);
-    $items = $objItem->obtenerItemsPorCategoriaSimple($idCategoria, $idProyecto);
+    $items= $objItem->obtenerItemsPorCategoriaSimple($idCategoria, $idProyecto);
+    $dataAux = $objItem->obtenerListaGastos();
+    $dataGasto = array(); foreach($dataAux as $c ){
+        if( $c['ID_Proyecto'] == $idProyecto ) $dataGasto[ $c['ID_Item'] ][] = $c['Monto_Gasto'];
+    }
 
     // Procesar el formulario de adición de presupuesto
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_item']) && isset($_POST['cantidad']) && isset($_POST['presupuesto'])) {
