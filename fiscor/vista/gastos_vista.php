@@ -9,6 +9,7 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: ../index.php");
     exit();
 }
+
 $m = null;
 if (isset($message)) {
     $_SESSION['message'] = $message;
@@ -42,57 +43,9 @@ if (isset($_GET['Volver'])) {
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.js"></script>
-
     <title>Gastos</title>
     <link rel="website icon" type="png" href="../vista/img/logo2.png">
 </head>
-<style>
-    /* Estilos básicos para el toast */
-    #toast {
-        visibility: hidden;
-        min-width: 250px;
-        margin-left: -125px;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 2px;
-        padding: 16px;
-        position: fixed;
-        z-index: 1;
-        left: 50%;
-        bottom: 30px;
-        font-size: 17px;
-    }
-
-    #toast.show {
-        visibility: visible;
-        animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-
-    @keyframes fadein {
-        from {
-            bottom: 0;
-            opacity: 0;
-        }
-
-        to {
-            bottom: 30px;
-            opacity: 1;
-        }
-    }
-
-    @keyframes fadeout {
-        from {
-            bottom: 30px;
-            opacity: 1;
-        }
-
-        to {
-            bottom: 0;
-            opacity: 0;
-        }
-    }
-</style>
 <body>
     <?php imprimirTopBar($nombreUsuario); ?>
     <div class="contenedor">
@@ -107,7 +60,7 @@ if (isset($_GET['Volver'])) {
         <div id="toast"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
     <div class="container">
-    <div class="contenedor-categoria px-6 pt-5">
+        <div class="contenedor-categoria px-6 pt-5">
             <div class="col-sm-12">
                 <a href="#" class="modal_abrir btn btn-primary" onClick="agregarGasto();"> <i class="fa-solid fa-plus"></i> Agregar Gasto</a>
             </div>
@@ -169,9 +122,7 @@ if (isset($_GET['Volver'])) {
                                     echo "<td>" . $row['Monto_Gasto'] . "</td>";
                                     echo "<td>" . $proyecto . "</td>";
                                     echo "<td>
-                                            <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . $row['ID_Gasto'] . "'>
-                                                <img src='../vista/img/eliminar.png' alt='eliminar'>
-                                            </a>
+                                            <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . $row['ID_Gasto'] . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
                                         </td>";
                                 echo "</tr>";
                             }
@@ -199,8 +150,8 @@ if (isset($_GET['Volver'])) {
                 <?php } ?>
                 <input type="hidden" id="gastoId" name="gastoId">
                 <div class="form-group">
-                    <label>Proyecto</label>
-                    <select id="idproyecto" name="idproyecto" class="form-control form-control-sm" onChange="seleccionarProyecto(this.value)">
+                    <label for="idproyecto">Proyecto</label>
+                    <select id="idproyecto" name="idproyecto" class="form-control form-control-sm" onChange="seleccionarProyecto(this.value)" required>
                         <option value="0">-- Selecciona --</option>
                         <?php foreach ($lista_proyectos as $id => $nombre) { ?>
                             <option value="<?php echo $id; ?>"><?php echo $nombre; ?></option>
@@ -208,32 +159,32 @@ if (isset($_GET['Volver'])) {
                     </select>
                 </div> 
                 <div class="form-group">
-                    <label>Categoría</label>
-                    <select id="idcategoria" name="idcategoria" class="form-control form-control-sm" onChange="seleccionarCategoria(this.value)">
+                    <label for="idcategoria">Categoría</label>
+                    <select id="idcategoria" name="idcategoria" class="form-control form-control-sm" onChange="seleccionarCategoria(this.value)" required>
                         <option value="0">-- Selecciona --</option>
                     </select>
                 </div> 
                 <div class="form-group">
-                    <label>Ítem</label>
-                    <select id="iditem" name="iditem" class="form-control form-control-sm">
+                    <label for="iditem">Ítem</label>
+                    <select id="iditem" name="iditem" class="form-control form-control-sm" required>
                         <option value="0">-- Selecciona --</option>
                     </select>
                 </div> 
                 <div class="form-group">
                     <label for="fecha">Fecha</label>
-                    <input type="date" id="fecha" name="fecha" class="form-control form-control-sm">
+                    <input type="date" id="fecha" name="fecha" class="form-control form-control-sm" required>
                 </div>
                 <div class="form-group">
                     <label for="montogasto">Monto</label>
-                    <input type="text" id="montogasto" name="montogasto" class="form-control form-control-sm" onkeydown="allowOnlyFloat(event)" oninput="validateFloatInput(this)">
+                    <input type="text" id="montogasto" name="montogasto" class="form-control form-control-sm" onkeydown="allowOnlyFloat(event)" oninput="validateFloatInput(this)" required>
                 </div>
                 <div class="form-group">
                     <label for="comprobante">Comprobante</label>
-                    <input type="text" id="comprobante" name="comprobante" class="form-control form-control-sm">
+                    <input type="text" id="comprobante" name="comprobante" class="form-control form-control-sm" maxlength="15" required>
                 </div>
                 <div class="form-group">
                     <label for="observacion">Observación</label>
-                    <textarea id="observacion" name="observacion" class="form-control form-control-sm"></textarea>
+                    <textarea id="observacion" name="observacion" class="form-control form-control-sm" required></textarea>
                 </div>
 
                 <div class="modal__botones-contenedor">
@@ -243,6 +194,7 @@ if (isset($_GET['Volver'])) {
             </form>
         </div>
     </section>
+
     <section id="modalEliminar" class="modal_section modalGasto">
         <div class="modal__contenedor">
             <form id="gastoEliminarForm" action="" method="POST">
@@ -269,7 +221,6 @@ if (isset($_GET['Volver'])) {
         let listaItem = <?php echo json_encode($lista_items); ?>;
         let listaPresupuesto = <?php echo json_encode($lista_presupuesto); ?>;
     </script>
-    
     <script>
         if( existeParametroGet('modalOn') ){ // Si acaba de agregar, volver a abrir modal
             agregarGasto();

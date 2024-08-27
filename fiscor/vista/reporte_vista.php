@@ -94,7 +94,7 @@ if (isset($_GET['Volver'])) {
                 <img src="../vista/img/chicaimpresora.png" class="imagen1" alt="chica en una impresora">
             </div>
         </div>
-    </div>
+    </div><br><br>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

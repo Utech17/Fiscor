@@ -3,12 +3,15 @@ function agregarGasto(){
     $('#gastoId').val(0);
     $('#buttonSubmit').val('Enviar');
 }
+
 function modalGastoForm(){
     $('#modalGasto').addClass('modal--show');
 }
+
 function cerrarModal(){
     $('.modalGasto').removeClass('modal--show');
 }
+
 function cambiarFiltroProyecto( idproyecto ){
     // Filtrar los gastos que pertenecen al proyecto
     $('#filtroCategoria').html('<option value="0">-- Todos --</option>');
@@ -29,6 +32,7 @@ function cambiarFiltroProyecto( idproyecto ){
     }
     cambiarFiltro();
 }
+
 function cambiarFiltroCategoria( idcategoria ){
     // Filtrar los gastos que pertenecen al proyecto
     let idproyecto = $('#filtroProyecto').val();
@@ -43,6 +47,7 @@ function cambiarFiltroCategoria( idcategoria ){
     }
     cambiarFiltro();
 }
+
 function cambiarFiltro(){
     let idproyecto = $('#filtroProyecto').val();
     let idcategoria = $('#filtroCategoria').val();
@@ -81,6 +86,7 @@ function cambiarFiltro(){
     $('#tablaDataGasto').html( echo )
     $('#tabla').DataTable({});
 }
+
 function filtroFecha(){
     let fechaDesde = $('#filtroFechaD').val();
     let fechaHasta = $('#filtroFechaH').val();
@@ -103,38 +109,60 @@ function filtroFecha(){
         return listaFiltrada;
     }
 }
+
 function eliminarGasto(input) {
     $('#modalEliminar').addClass('modal--show');
     $('#eliminarId').val(input.getAttribute('data-id'));
 }
-function seleccionarProyecto( idproyecto ){
-    if( idproyecto == '' || idproyecto == 0 ) return;
+
+function seleccionarProyecto(idproyecto) {
+    if (idproyecto == '' || idproyecto == 0) return;
+
     const itemsProyecto = listaPresupuesto.filter(proyecto => proyecto.id_proyecto == idproyecto);
+    
     // Obtener los id_categorias correspondientes a los id_item del proyecto
     const categoriasProyecto = itemsProyecto.map(proyecto => {
         const item = listaItem.find(i => i.id_item == proyecto.id_item);
         return item ? item.id_categoria : null;
     }).filter(id_categoria => id_categoria !== null);
+
     // Obtener categorías únicas y sus nombres
     const categoriasUnicas = [...new Set(categoriasProyecto)];
-    const lista = categoriasUnicas.map(id_categoria => {
+    const listaCategorias = categoriasUnicas.map(id_categoria => {
         const categoria = listaCategoria.find(cat => cat.id_categoria === id_categoria);
         return categoria ? { id_categoria: categoria.id_categoria, nombre: categoria.nombre } : null;
     }).filter(categoria => categoria !== null);
 
+    // Llenar el select de categorías
     $('#idcategoria').empty();
-    $('#idcategoria').append(`<option value="0">-- Selecciona --</option>`);
-    $.each(lista, function(k, c){
-        $('#idcategoria').append(`<option value="${ c['id_categoria'] }">${ c['nombre'] }</option>`);
+    $('#idcategoria').append('<option value="0">-- Selecciona --</option>');
+    $.each(listaCategorias, function(k, c) {
+        $('#idcategoria').append(`<option value="${ c.id_categoria }">${ c.nombre }</option>`);
     });
-}
-function seleccionarCategoria( idcategoria ){
-    if( idcategoria == '' || idcategoria == 0 ) return;
-    let lista = listaItem.filter(item => item.id_categoria == idcategoria);
+
+    // Limpiar el select de items
     $('#iditem').empty();
-    $('#iditem').append(`<option value="0">-- Selecciona --</option>`);
-    $.each(lista, function(k, c){
-        $('#iditem').append(`<option value="${ c['id_item'] }">${ c['nombre'] }</option>`);
+    $('#iditem').append('<option value="0">-- Selecciona --</option>');
+}
+
+function seleccionarCategoria(idcategoria) {
+    if (idcategoria == '' || idcategoria == 0) return;
+
+    // Filtrar los items por categoría seleccionada
+    const itemsCategoria = listaItem.filter(item => item.id_categoria == idcategoria);
+    
+    // Filtrar los items por el proyecto seleccionado
+    const idproyecto = $('#idproyecto').val();
+    const itemsProyecto = listaPresupuesto.filter(proyecto => proyecto.id_proyecto == idproyecto)
+                                           .map(p => p.id_item);
+
+    const lista = itemsCategoria.filter(item => itemsProyecto.includes(item.id_item));
+    
+    // Llenar el select de items
+    $('#iditem').empty();
+    $('#iditem').append('<option value="0">-- Selecciona --</option>');
+    $.each(lista, function(k, c) {
+        $('#iditem').append(`<option value="${ c.id_item }">${ c.nombre }</option>`);
     });
 }
 
@@ -166,6 +194,7 @@ function validateFloatInput(input) {
         input.setCustomValidity("");
     }
 }
+
 // Para verificar si existe parametro GET
 function existeParametroGet( parametro ) {
     const params = new URLSearchParams(window.location.search);

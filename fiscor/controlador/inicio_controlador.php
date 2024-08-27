@@ -1,10 +1,12 @@
 <?php
     require_once("../modelo/proyecto_modelo.php");
     require_once("../modelo/presupuesto_modelo.php");
+    require_once("../modelo/gastos_modelo.php");
     require_once("vista_controlador.php");
 
     $presupuestoModelo = new PresupuestoModelo();
     $proyectoModelo = new Proyecto();
+    $Gastos = new Gastos();
 
     // Si no es una solicitud AJAX, cargar los datos iniciales
     $datosPresupuesto = $presupuestoModelo->consultar(); 
@@ -39,6 +41,15 @@
 
     //total de presupuesto
     $totalpre = $presupuestoModelo->sumarPresupuestos(); 
+
+    //total de gastos
+    $totalg = $Gastos->sumarTodosLosGastos();
+    if ($totalg === null || $totalg == 0) {
+        $totalg = "0.00";
+    } else {
+        // Formatear el número para mostrar dos decimales
+        $totalg = number_format($totalg, 2, '.', '');
+    }
 
     // Cargar el proyecto por defecto
     $id_proyecto = 1;

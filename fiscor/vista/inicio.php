@@ -32,7 +32,6 @@ if (isset($_GET['Volver'])) {
     <link rel="stylesheet" type="text/css" href="../vista/css/estilosinicio.css">
     <script src="../vista/js/chart.js"></script>
 </head>
-
 <body>
     <?php imprimirTopBar($nombreUsuario); ?>
     <div class="contenedor">
@@ -66,7 +65,7 @@ if (isset($_GET['Volver'])) {
                 <div class="card text-center mb-3" style="background-color: #007bff; color: white;">
                     <div class="card-header">Total Gastos</div>
                     <div class="card-body">
-                        <h5 class="card-title"><span id="idVendidos3">0.00</span></h5>
+                        <h5 class="card-title"><span id="idVendidos3"><?php echo htmlspecialchars($totalg); ?></span></h5>
                     </div>
                 </div>
             </div>

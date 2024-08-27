@@ -1,12 +1,10 @@
 <?php
 require_once("../modelo/gastos_modelo.php");
-require_once("../modelo/categoria_modelo.php");
 
 $objGastos = new Gastos();
-$objCategoria = new Categoria();
 
 $data = $objGastos->buscarTodos();
-
+$idRol = isset($_SESSION['ID_Rol']) ? $_SESSION['ID_Rol'] : 0;
 $lista_proyectos = $objGastos->obtenerListaProyectos();
 $lista_categorias = $objGastos->obtenerListaCategorias();
 $lista_items = $objGastos->obtenerListaItems();
@@ -22,22 +20,24 @@ if (isset($_POST['Enviar'])) {
         $objGastos->setObservacion($_POST['observacion']);
         $resultado = $objGastos->agregarGasto();
         // Verificar si supera presupuesto para item
-        $presupuestoSuperado = $objGastos->verificarPresupuestoSuperado( $lista_presupuesto, $data );
+        $presupuestoSuperado = $objGastos->verificarPresupuestoSuperado($lista_presupuesto, $data);
 
         if ($resultado) {
-            $script = "<script>
-                alert('Gasto agregado con éxito');
-                location.href='../controlador/gastos_controlador.php?modalOn";
-                if ($presupuestoSuperado) {
-                    $script .= "&ps";
-                }
-            $script .= "';</script>";
-            echo $script;
+            $_SESSION['message'] = 'Gasto agregado con éxito';
+            if ($presupuestoSuperado) {
+                $_SESSION['message'] .= '. Advertencia: Se ha superado el presupuesto para este ítem.';
+            }
+            header("Location: ../controlador/gastos_controlador.php");
+            exit();
         } else {
-            echo "<script>alert('Error al agregar gasto');</script>";
+            $_SESSION['message'] = 'Error al agregar gasto';
+            header("Location: ../controlador/gastos_controlador.php");
+            exit();
         }
     } else {
-        echo "<script>alert('Faltan datos para agregar el gasto');</script>";
+        $_SESSION['message'] = 'Faltan datos para agregar el gasto';
+        header("Location: ../controlador/gastos_controlador.php");
+        exit();
     }
 }
 
@@ -45,9 +45,13 @@ if (isset($_POST['eliminarId'])) {
     $objGastos->setID_Gasto($_POST['eliminarId']);
     $resultado = $objGastos->eliminarGasto();
     if ($resultado) {
-        echo "<script>alert('Gasto eliminado con éxito');location.href='../controlador/gastos_controlador.php';</script>";
+        $_SESSION['message'] = 'Gasto eliminado con éxito';
+        header("Location: ../controlador/gastos_controlador.php");
+        exit();
     } else {
-        echo "<script>alert('Error al eliminar gasto');</script>";
+        $_SESSION['message'] = 'Error al eliminar gasto';
+        header("Location: ../controlador/gastos_controlador.php");
+        exit();
     }
 }
 
@@ -58,7 +62,7 @@ if (isset($_GET['start_date'], $_GET['end_date'])) {
     $data = $objGastos->buscarGastosPorFecha($startDate, $endDate);
 
     echo json_encode($data);
-    exit;
+    exit();
 }
 
 require_once("vista_controlador.php");

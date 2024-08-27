@@ -188,5 +188,18 @@ class Gastos extends Conexion {
         }
         if( ( $acumGasto + $this->Monto_Gasto ) > $presupuesto ) return true; else return false;
     }
+    
+    public function sumarTodosLosGastos() {
+        try {
+            $sql = "SELECT SUM(Monto_Gasto) as total_gastos FROM gasto";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $resultado['total_gastos'];
+        } catch (PDOException $e) {
+            error_log("Error al sumar todos los gastos: " . $e->getMessage(), 0);
+            return 0;
+        }
+    }
 }
 ?>

@@ -39,54 +39,6 @@ if (isset($_GET['Volver'])) {
     <title>Usuario</title>
     <link rel="icon" type="image/png" href="../vista/img/logo2.png">
 </head>
-<style>
-    /* Estilos básicos para el toast */
-    #toast {
-        visibility: hidden;
-        min-width: 250px;
-        margin-left: -125px;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 2px;
-        padding: 16px;
-        position: fixed;
-        z-index: 1;
-        left: 50%;
-        bottom: 30px;
-        font-size: 17px;
-    }
-
-    #toast.show {
-        visibility: visible;
-        animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-
-    @keyframes fadein {
-        from {
-            bottom: 0;
-            opacity: 0;
-        }
-
-        to {
-            bottom: 30px;
-            opacity: 1;
-        }
-    }
-
-    @keyframes fadeout {
-        from {
-            bottom: 30px;
-            opacity: 1;
-        }
-
-        to {
-            bottom: 0;
-            opacity: 0;
-        }
-    }
-</style>
-
 <body>
     <?php imprimirTopBar($usuario); ?>
     <div class="contenedor">
@@ -101,19 +53,6 @@ if (isset($_GET['Volver'])) {
     <?php if (isset($message)): ?>
         <div id="toast"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
-
-    <script>
-        // JavaScript para mostrar el toast
-        window.onload = function() {
-            var toast = document.getElementById("toast");
-            if (toast) {
-                toast.className = "show";
-                setTimeout(function() {
-                    toast.className = toast.className.replace("show", "");
-                }, 3000);
-            }
-        };
-    </script>
     <div class="container">
         <div class="contenedor-usuario px-6 pt-5">
             <div id="tabla_div" class="table-responsive">
