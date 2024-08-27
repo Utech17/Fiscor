@@ -74,14 +74,14 @@
 		}
 
 		public function agregarItem() { 
-			$registro = "INSERT INTO item (id_item, ID_Categoria, nombre, estado) VALUES (:id_item,:ID_Categoria,:nombre,:estado)";
+			$registro = "INSERT INTO item (id_item, ID_Categoria, nombre, estado) 
+						 VALUES (:id_item,:ID_Categoria,:nombre,:estado)";
 			$preparado = $this->conexion->prepare($registro);
 			$preparado->bindParam(':id_item', $this->id_item);
 			$preparado->bindParam(':ID_Categoria', $this->id_categoria);
 			$preparado->bindParam(':nombre', $this->nombre);
 			$preparado->bindParam(':estado', $this->estado);
 			$resul= $preparado->execute();
-
 			if( $resul ){
 				$this->id_item = $this->conexion->lastInsertId();
 				$result2 = $this->agregarPresupuesto();
@@ -93,30 +93,30 @@
 				}
 			} else
 				$res = 0;
-
 			return $res;
 		}
 
 		public function agregarPresupuesto() { 
-			$registro = "INSERT INTO presupuesto (id_item, id_proyecto, cantidad, monto_presupuesto) VALUES (:id_item,:id_proyecto,:cantidad,:presupuesto)";
+			$registro = "INSERT INTO presupuesto (id_item, id_proyecto, cantidad, monto_presupuesto) 
+						 VALUES (:id_item,:id_proyecto,:cantidad,:presupuesto)";
 			$preparado = $this->conexion->prepare($registro);
 			$preparado->bindParam(':id_item', $this->id_item);
 			$preparado->bindParam(':id_proyecto', $this->id_proyecto);
 			$preparado->bindParam(':cantidad', $this->cantidad);
 			$preparado->bindParam(':presupuesto', $this->presupuesto);
 			$resul= $preparado->execute();
-
 			if( $resul )
 				$res = 1;
 			else
 				$res = 0;
-
 			return $res;
 		}
 
 		public function buscarProyectoNombreId(){
 			$res = array();
-			$registro="SELECT nombre from proyecto where ID_Proyecto ='".$this->id_proyecto."' LIMIT 1";
+			$registro="SELECT nombre 
+					   from proyecto 
+					   where ID_Proyecto ='".$this->id_proyecto."' LIMIT 1";
 			$preparado = $this->conexion->prepare($registro);
 			$preparado->execute();
 			$datos = $preparado->fetch(PDO::FETCH_ASSOC);
@@ -128,7 +128,9 @@
 
 		public function buscarCategoriaNombreId(){
 			$res = array();
-			$registro="SELECT nombre from categoria where ID_Categoria ='".$this->id_categoria."' LIMIT 1";
+			$registro="SELECT nombre 
+					   from categoria 
+					   where ID_Categoria ='".$this->id_categoria."' LIMIT 1";
 			$preparado = $this->conexion->prepare($registro);
 			$preparado->execute();
 			$datos = $preparado->fetch(PDO::FETCH_ASSOC);
@@ -141,7 +143,6 @@
 
 		public function buscarItemsConPresupuesto($idProyecto, $idCategoria) {
 			try {
-				// Obtener los ítems que tienen un presupuesto asociado en el proyecto actual
 				$sql = "SELECT i.*, p.cantidad, p.monto_presupuesto 
 						FROM item i
 						JOIN presupuesto p ON i.id_item = p.id_item 
@@ -157,22 +158,14 @@
 			}
 		}
 
-		public function obtenerListaGastos() {
-			try {
-				$sql = "SELECT * FROM gasto";
-				$stmt = $this->conexion->prepare($sql);
-				$stmt->execute();
-				return $stmt->fetchAll(PDO::FETCH_ASSOC);
-			} catch (PDOException $e) {
-				error_log("Error al buscar todos los gastos: " . $e->getMessage(), 0);
-				return array();
-			}
-		}
-
 		public function actualizarItem() {
 			try {
-				$sql = "UPDATE item SET nombre = :nombre, estado = :estado WHERE id_item = :id_item;
-						UPDATE presupuesto SET cantidad = :cantidad, monto_presupuesto = :presupuesto WHERE id_item = :id_item AND id_proyecto = :id_proyecto";
+				$sql = "UPDATE item 
+						SET nombre = :nombre, estado = :estado 
+						WHERE id_item = :id_item;
+						UPDATE presupuesto 
+						SET cantidad = :cantidad, monto_presupuesto = :presupuesto 
+						WHERE id_item = :id_item AND id_proyecto = :id_proyecto";
 				$stmt = $this->conexion->prepare($sql);
 				$stmt->bindParam(':nombre', $this->nombre);
 				$stmt->bindParam(':estado', $this->estado);
@@ -180,7 +173,7 @@
 				$stmt->bindParam(':cantidad', $this->cantidad);
 				$stmt->bindParam(':presupuesto', $this->presupuesto);
 				$stmt->bindParam(':id_proyecto', $this->id_proyecto);
-
+		
 				return $stmt->execute() ? 1 : 0;
 			} catch (PDOException $e) {
 				error_log("Error al actualizar el ítem: " . $e->getMessage(), 0);
@@ -190,13 +183,13 @@
 
 		public function eliminarPresupuestoItem($idProyecto) {
 			try {
-				// Elimina el presupuesto relacionado con el ítem y el proyecto específico
-				$sql = "DELETE FROM presupuesto WHERE id_item = :id_item AND id_proyecto = :id_proyecto";
+				$sql = "DELETE 
+						FROM presupuesto 
+						WHERE id_item = :id_item AND id_proyecto = :id_proyecto";
 				$stmt = $this->conexion->prepare($sql);
 				$stmt->bindParam(':id_item', $this->id_item);
 				$stmt->bindParam(':id_proyecto', $idProyecto);
 				$resul = $stmt->execute();
-
 				return $resul;
 			} catch (PDOException $e) {
 				error_log("Error al eliminar el presupuesto del ítem: " . $e->getMessage(), 0);
@@ -218,7 +211,6 @@
 				$stmt->bindParam(':idCategoria', $idCategoria);
 				$stmt->bindParam(':idProyecto', $idProyecto);
 				$stmt->execute();
-
 				return $stmt->fetchAll(PDO::FETCH_ASSOC);
 			} catch (PDOException $e) {
 				error_log("Error al obtener ítems por categoría: " . $e->getMessage(), 0);

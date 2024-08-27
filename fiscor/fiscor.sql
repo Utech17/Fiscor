@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-08-2024 a las 00:19:05
+-- Tiempo de generación: 21-08-2024 a las 07:20:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -61,14 +61,6 @@ CREATE TABLE `gasto` (
   `Comprobante` varchar(50) NOT NULL,
   `Observacion` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `gasto`
---
-
-INSERT INTO `gasto` (`ID_Gasto`, `ID_Usuario`, `ID_Proyecto`, `ID_Item`, `Fecha`, `Monto_Gasto`, `Comprobante`, `Observacion`) VALUES
-(2, 1, 1, 1, '2024-08-21', 45, '420405', 'S/O'),
-(3, 1, 1, 2, '2024-08-21', 50, '45656', 'Necesario');
 
 -- --------------------------------------------------------
 
@@ -254,7 +246,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `gasto`
 --
 ALTER TABLE `gasto`
-  MODIFY `ID_Gasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_Gasto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `item`

@@ -6,136 +6,20 @@
     function modalGastoForm(){
         $('#modalGasto').addClass('modal--show');
     }
+    function buscarGasto( input ){
+        modalGastoForm();
+        $('#idproyecto').val( input.getAttribute('data-proyecto') );
+        $('#idcategoria').val( input.getAttribute('data-categoria') );
+        $('#iditem').val( input.getAttribute('data-item') );
+        $('#fecha').val( input.getAttribute('data-fecha') );
+        $('#montogasto').val( input.getAttribute('data-monto') );
+        $('#comprobante').val( input.getAttribute('data-comprobante') );
+        $('#observacion').val( input.getAttribute('data-observacion') );
+        $('#buttonSubmit').val('Guardar Cambios');
+    }
+
     function cerrarModal(){
-        $('.modalGasto').removeClass('modal--show');
-    }
-    function cambiarFiltroProyecto( idproyecto ){
-        // Filtrar los gastos que pertenecen al proyecto
-        $('#filtroCategoria').html('<option value="0">-- Todos --</option>');
-        $('#filtroItem').html('<option value="0">-- Todos --</option>');
-        if( idproyecto > 0 ){
-            // Items relacionados con proyecto
-            const idItems = listaPresupuesto.filter(item => item.id_proyecto == idproyecto).map(item =>item.id_item );
-            const idCategorias = listaItem.filter(item => idItems.includes(item.id_item)).map(item => item.id_categoria);
-            const categoriasUnicas = [...new Set(idCategorias)];
-            const lista = categoriasUnicas.map(id_categoria => {
-                const categoria = listaCategoria.find(cat => cat.id_categoria === id_categoria);
-                return categoria ? { id_categoria: categoria.id_categoria, nombre: categoria.nombre } : null;
-            }).filter(categoria => categoria !== null);
-
-            $.each(lista, function(k, c){
-                $('#filtroCategoria').append(`<option value="${ c['id_categoria'] }">${ c['nombre'] }</option>`);
-            });
-        }
-        cambiarFiltro();
-    }
-    function cambiarFiltroCategoria( idcategoria ){
-        // Filtrar los gastos que pertenecen al proyecto
-        let idproyecto = $('#filtroProyecto').val();
-        $('#filtroItem').html('<option value="0">-- Todos --</option>');
-        if( idcategoria > 0 ){
-            // Items relacionados con categoria
-            const idItems = listaPresupuesto.filter(item => item.id_proyecto == idproyecto).map(item =>item.id_item );
-            const lista = listaItem.filter(item => idItems.includes(item.id_item) && item.id_categoria == idcategoria );
-            $.each(lista, function(k, c){
-                $('#filtroItem').append(`<option value="${ c['id_item'] }">${ c['nombre'] }</option>`);
-            });
-        }
-        cambiarFiltro();
-    }
-    function cambiarFiltro(){
-        let idproyecto = $('#filtroProyecto').val();
-        let idcategoria = $('#filtroCategoria').val();
-        let iditem = $('#filtroItem').val();
-        // Filtrar por fecha
-        let dataFiltro = filtroFecha();
-        if( !dataFiltro ) return;
-        // Filtrar proyecto y items
-        dataFiltro = dataFiltro.filter(item => ( ( idproyecto == 0 || item.ID_Proyecto == idproyecto ) && ( iditem == 0 || item.ID_Item == iditem ) ) );
-        const idItems = dataFiltro.map(item =>item.ID_Item );
-        const itemCategorias = listaItem.filter(item => idItems.includes(item.id_item) && (idcategoria == 0 || item.id_categoria == idcategoria)).map(item => item.id_item);
-        // Filtrar a items pertenecientes a categorias
-        if( idcategoria > 0 ){
-            dataFiltro = dataFiltro.filter(item => ( itemCategorias.includes(item.ID_Item) ) );
-        }
-        // Presentar datos
-        let echo = '';
-        $.each(dataFiltro, function(k, row){
-            row['proyecto'] = listaProyecto[ row['ID_Proyecto'] ] != undefined ? listaProyecto[ row['ID_Proyecto'] ] : '';
-            row['item'] = ''; $.each(listaItem, function(k2, c2){
-                if(c2['id_item'] == row['ID_Item']) row['item'] = c2['nombre'];
-            });
-            echo += `<tr>
-                <td>${ row['Fecha'] }</td>
-                <td>${ row['item'] }</td>
-                <td>${ row['Monto_Gasto'] }</td>
-                <td>${ row['proyecto'] }</td>
-                <td>
-                    <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='${row['ID_Gasto']}'>
-                        <img src='../vista/img/eliminar.png' alt='eliminar'>
-                    </a>
-                </td>
-            </tr>`;
-        })
-        $('#tabla').DataTable().destroy();
-        $('#tablaDataGasto').html( echo )
-        $('#tabla').DataTable({});
-    }
-    function filtroFecha(){
-        let fechaDesde = $('#filtroFechaD').val();
-        let fechaHasta = $('#filtroFechaH').val();
-
-        // Verificar si fechaHasta es mayor que fechaDesde
-        if( fechaDesde != '' && fechaHasta != '' && new Date(fechaHasta) < new Date(fechaDesde)) {
-            alert('La fecha "Hasta" no puede ser menor que la fecha "Desde".');
-            $('#filtroFechaH').val(''); return false;
-        } else {
-            // Filtrar listaGasto según las fechas proporcionadas
-            let listaFiltrada = listaGasto.filter(gasto => {
-                let fechaGasto = new Date(gasto.Fecha);
-                // Verificar si cumple con la condición de fechaDesde
-                let cumpleDesde = fechaDesde ? fechaGasto >= new Date(fechaDesde) : true;
-                // Verificar si cumple con la condición de fechaHasta
-                let cumpleHasta = fechaHasta ? fechaGasto <= new Date(fechaHasta) : true;
-                // Retornar true si cumple con ambas condiciones
-                return cumpleDesde && cumpleHasta;
-            });
-            return listaFiltrada;
-        }
-    }
-    function eliminarGasto(input) {
-        $('#modalEliminar').addClass('modal--show');
-        $('#eliminarId').val(input.getAttribute('data-id'));
-    }
-    function seleccionarProyecto( idproyecto ){
-        if( idproyecto == '' || idproyecto == 0 ) return;
-        const itemsProyecto = listaPresupuesto.filter(proyecto => proyecto.id_proyecto == idproyecto);
-        // Obtener los id_categorias correspondientes a los id_item del proyecto
-        const categoriasProyecto = itemsProyecto.map(proyecto => {
-            const item = listaItem.find(i => i.id_item == proyecto.id_item);
-            return item ? item.id_categoria : null;
-        }).filter(id_categoria => id_categoria !== null);
-        // Obtener categorías únicas y sus nombres
-        const categoriasUnicas = [...new Set(categoriasProyecto)];
-        const lista = categoriasUnicas.map(id_categoria => {
-            const categoria = listaCategoria.find(cat => cat.id_categoria === id_categoria);
-            return categoria ? { id_categoria: categoria.id_categoria, nombre: categoria.nombre } : null;
-        }).filter(categoria => categoria !== null);
-
-        $('#idcategoria').empty();
-        $('#idcategoria').append(`<option value="0">-- Selecciona --</option>`);
-        $.each(lista, function(k, c){
-            $('#idcategoria').append(`<option value="${ c['id_categoria'] }">${ c['nombre'] }</option>`);
-        });
-    }
-    function seleccionarCategoria( idcategoria ){
-        if( idcategoria == '' || idcategoria == 0 ) return;
-        let lista = listaItem.filter(item => item.id_categoria == idcategoria);
-        $('#iditem').empty();
-        $('#iditem').append(`<option value="0">-- Selecciona --</option>`);
-        $.each(lista, function(k, c){
-            $('#iditem').append(`<option value="${ c['id_item'] }">${ c['nombre'] }</option>`);
-        });
+        $('#modalGasto').removeClass('modal--show');
     }
 
     function allowOnlyFloat(evt) {
@@ -165,9 +49,4 @@
         } else {
             input.setCustomValidity("");
         }
-    }
-    // Para verificar si existe parametro GET
-    function existeParametroGet( parametro ) {
-        const params = new URLSearchParams(window.location.search);
-        return params.has(parametro);
     }

@@ -1,40 +1,44 @@
 <?php
 require_once("../modelo/proyecto_modelo.php");
-
+$message = null;
 $objProyecto = new Proyecto();
 $data = $objProyecto->buscarTodos();
 $dataAux = $objProyecto->buscarPresupuesto();
-$dataPresupuesto = array(); foreach($dataAux as $c ){ $dataPresupuesto[ $c['id_proyecto'] ][] = $c['monto_presupuesto']; }
-$dataAux = $objProyecto->obtenerListaGastos();
-$dataGasto = array(); foreach($dataAux as $c ){ $dataGasto[ $c['ID_Proyecto'] ][] = $c['Monto_Gasto']; }
+$dataPresupuesto = array();
+foreach ($dataAux as $c) {
+    $dataPresupuesto[$c['id_proyecto']][] = $c['monto_presupuesto'];
+}
 
 require_once("vista_controlador.php");
+$idRol = isset($_SESSION['ID_Rol']) ? $_SESSION['ID_Rol'] : 0;
 
 if (isset($_POST['Enviar'])) {
-    if(isset($_POST['nombre']) && isset($_POST['estado']) && isset($_POST['descripcion'])) {
+    if (isset($_POST['nombre']) && isset($_POST['estado']) && isset($_POST['descripcion'])) {
         $idProyecto = $_POST['proyectoId'];
         $objProyecto->setID_Proyecto($idProyecto);
         $objProyecto->set_Estado($_POST['estado']);
         $objProyecto->set_Nombre($_POST['nombre']);
         $objProyecto->set_Descripcion($_POST['descripcion']);
-        if( $idProyecto == 0 )
+        if ($idProyecto == 0)
             $resultado = $objProyecto->agregarProyecto();
-        else if( $idProyecto > 0 )
+        else if ($idProyecto > 0)
             $resultado = $objProyecto->actualizarProyecto();
 
-        if( $idProyecto == 0 ){
-            if( $resultado == 1 )
-                echo "<script>alert('Proyecto agregada con éxito'); location.href='../controlador/proyecto_controlador.php';</script>";
+        if ($idProyecto == 0) {
+            if ($resultado == 1)
+                $message = " Proyecto agregada con éxito";
+
             else
-                echo "<script>alert('Error al agregar proyecto');</script>";
-        } else if( $idProyecto > 0 ){
-            if( $resultado == 1 )
-                echo "<script>alert('Proyecto modificada con éxito'); location.href='../controlador/proyecto_controlador.php';</script>";
+                $message = " Error al agregar proyecto";
+        } else if ($idProyecto > 0) {
+            if ($resultado == 1)
+                $message = " Proyecto modificada con éxito";
+
             else
-                echo "<script>alert('Error al modificar proyecto');</script>";
+                $message = " Error al modificar proyecto";
         }
     } else
-        echo "<script>alert('Faltan datos para agregar la proyecto');</script>";
+        $message = "Faltan datos para agregar la proyecto";
 }
 
 if (isset($_GET['eliminarId'])) {
@@ -46,18 +50,18 @@ if (isset($_GET['eliminarId'])) {
 
     if ($presupuestoAsociado) {
         // Si hay presupuesto asociado, mostrar un mensaje y no proceder con la eliminación
-        echo "<script>alert('Por políticas de la empresa, no se puede eliminar un proyecto que tiene un presupuesto ya definido.'); location.href='../controlador/proyecto_controlador.php';</script>";
+        $message = "Por políticas de la empresa, no se puede eliminar un proyecto que tiene un presupuesto ya definido.";
     } else {
         // Si no hay presupuesto asociado, proceder con la eliminación
         $resultado = $objProyecto->eliminarProyecto();
 
         if ($resultado) {
-            echo "<script>alert('Proyecto eliminado con éxito'); location.href='../controlador/proyecto_controlador.php';</script>";
+            $message = "Proyecto eliminado con éxito";
         } else {
-            echo "<script>alert('Error al eliminar proyecto');</script>";
+            $message = "Error al eliminar proyecto";
+            // Manejar el error de forma similar, mostrando un modal de error
         }
     }
 }
 
 require_once("../vista/proyecto_vista.php");
-?>

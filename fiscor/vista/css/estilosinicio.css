@@ -4,15 +4,17 @@ body {
     background-color: #f5f5f5;
 }
 
+/* Estructura principal */
 .contenedor {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 200px;
 }
 
 .contenido {
-    padding: 50px;
-    height: auto;
-    padding-left: 250px;
+    padding: 40px;
+    width: 90%;
 }
 
 .px-5 {
@@ -28,35 +30,66 @@ body {
     max-height: 1000px;
 }
 
+/* Contenedores */
 .contenedor-categoria,
 .contenedor-canvas,
 .contenedor-usuario {
     background-color: white;
     border: 1px solid rgba(0.1, 0.1, 0.1, 0.2);
     padding: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
-    width: 75%;
+    width: 80%;
     max-width: 1200px;
-    margin-left: 250px; 
+    margin: 20px auto;
+    margin-left: 135px;
 }
 
+.container{
+    margin-left: 100px;
+}
+
+.container-inicio{
+    margin-left: 110px;
+}
+
+.contenedor-card {
+    width: 82%;
+    margin-left: 125px;
+}
+
+/* Estilo del ícono de hamburguesa */
+.menu-hamburguesa {
+    display: none; /* Oculto por defecto en pantallas grandes */
+    position: absolute;
+    left: 0;
+}
+
+.menu-hamburguesa img {
+    width: 30px;
+    height: auto;
+    cursor: pointer;
+}
+
+#hamburguesa {
+    transition: transform 0.3s ease;
+}
+
+/* Barra lateral */
 .barra-lateral {
     width: 200px;
     height: 100%;
     background-color: #045fb4;
-    position: fixed;
+    position: fixed; /* Fija la barra lateral en su posición */
     top: 0;
     left: 0;
     overflow-x: hidden;
     padding-top: 20px;
     transition: width 0.3s;
+    z-index: 1000; /* Asegura que la barra lateral esté por encima de otros elementos */
 }
 
+/* Logos y textos */
 .logo {
     text-align: center;
     margin-bottom: 30px;
@@ -83,7 +116,7 @@ body {
     display: flex;
     color: #fff;
     text-decoration: none;
-    padding: 10px 10px;
+    padding: 10px;
     margin-left: 10px;
     align-items: center;
     font-size: 15px;
@@ -107,6 +140,7 @@ h2 {
     font-weight: bold;
 }
 
+/* Modal */
 .modal_section,
 .modal_section_editar {
     display: none;
@@ -118,6 +152,7 @@ h2 {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    z-index: 10000;
 }
 
 .modal--show {
@@ -128,9 +163,10 @@ h2 {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
-    width: 500px;
+    width: 90%;
     max-width: 500px;
     margin: 0 auto;
+    z-index: 10001;
 }
 
 .modal__botones-contenedor {
@@ -138,6 +174,7 @@ h2 {
     margin-top: 10px;
 }
 
+/* Botones */
 .btn-azul {
     background-color: #007bff;
     color: white; 
@@ -156,6 +193,7 @@ h2 {
     border-radius: 10px;
 }
 
+/* Barra superior */
 .top-bar {
     background-color: #045fb4 ;
     color: white;
@@ -170,91 +208,195 @@ h2 {
     align-items: center;
 }
 
-
 .top-bar .user-info span {
     font-weight: bold;
 }
 
-/* Para pantallas medianas */
-@media (max-width: 1200px) {
-    .contenedor {
-        flex-direction: column;
-    }
-
-    .contenido {
-        padding-left: 0; 
-    }
-
-    .contenedor-categoria,
-    .contenedor-canvas,
-    .contenedor-usuario {
-        margin-left: 0; 
-    }
-
-    .barra-lateral {
-        width: 180px; 
-    }
+/* Tablas */
+.table-container {
+    overflow-x: auto !important;
 }
 
-@media (max-width: 768px) {
-    .barra-lateral {
-        width: 150px; 
-        position: relative;
-        height: auto;
-        padding-top: 10px; 
+/* Ajustes para tabletas y pantallas medianas */
+@media (max-width: 992px) {
+    .contenedor {
+        margin-left: 150px;
     }
 
-    .contenido {
-        padding: 20px;
-        padding-left: 0; 
+    .container{
+        margin-left: 42px;
+    }
+
+    .container-inicio{
+        margin-left: 190px;
     }
 
     .contenedor-categoria,
-    .contenedor-canvas,
     .contenedor-usuario {
-        width: 90%; 
-        margin-left: 0; 
+        width: 80%;
+    }
+    .contenedor-canvas{
+        width: 90%;
+        margin-left: 10px;
     }
 
-    .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px;
+    .contenedor-card {
+        width: 93%;
+        margin-left: 0px;
     }
 
-    .top-bar .user-info {
-        font-size: 14px; 
+    .barra-lateral {
+        width: 150px;
+        height: 100%;
     }
 
     .menu li {
-        font-size: 14px; 
+        padding: 8px 5px;
+        font-size: 14px;
     }
 
-    .menu li img {
-        display: none; 
-    }
-}
-
-@media (max-width: 576px) {
-    .barra-lateral {
-        width: 100px; 
+    .menu li a {
+        font-size: 14px;
     }
 
     .top-bar {
         padding: 10px;
+        width: 100%;
+    }
+    .card-body h5.card-title {
+        font-size: 1.3rem; /* Ajusta el tamaño del título */
     }
 
-    .modal__contenedor {
-        width: 90%;
-        max-width: none;
+    .card-header {
+        font-size: 0.9rem; /* Ajusta el tamaño del texto en el encabezado */
     }
 
-    .btn-azul,
-    .btn-rojo {
-        padding: 4px 8px;
+}
+
+/* Ajustes para pantallas pequeñas (móviles) */
+@media (max-width: 768px) {
+    .contenedor {
+        margin-left: 10px;
     }
 
-    .contenido {
+    .container-inicio{
+        margin-left: 10px;
+    }
+
+    .contenedor-categoria,
+    .contenedor-usuario {
+        width: 100%;
+        padding: 15px;
+        margin-left: 0;
+    }
+
+    .contenedor-canvas{
+        width: 95%;
+        margin-left: 10px;
+    }
+
+    .contenedor-card {
+        width: 98%;
+        margin-left: 0px;
+    }
+
+    .barra-lateral {
+        display: none; /* Inicialmente oculto */
+    }
+    
+    .barra-lateral.show {
+        display: block; /* Se muestra cuando se activa la clase 'show' */
+    }
+
+    .menu-hamburguesa {
+        display: block; /* Muestra el ícono de hamburguesa en pantallas pequeñas */
         padding: 10px;
+        cursor: pointer;
+    }
+
+    .menu li {
+        padding: 8px 5px;
+        font-size: 12px;
+    }
+
+    .menu li a {
+        font-size: 12px;
+    }
+
+    .top-bar {
+        padding: 10px;
+        width: 100%;
+    }
+
+}
+
+/* Ajustes para pantallas muy pequeñas (móviles más pequeños) */
+@media (max-width: 576px) {
+    .contenedor {
+        margin-left: 5px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .container{
+        margin-left: 2px;
+    }
+
+    .container-inicio{
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+
+    .contenedor-categoria{
+        width: 100%;
+        padding: 10px;
+        margin-left: 0;
+    }
+
+    .contenedor-usuario {
+        width: 100%;
+        padding: 10px;
+        margin-left: 0;
+    }
+
+    .contenedor-canvas{
+        width: 97%;
+    }
+
+    .contenedor-card {
+        width: 100%;
+    }
+
+    .barra-lateral {
+        display: none; /* Inicialmente oculto */
+    }
+    
+    .barra-lateral.show {
+        display: block; /* Se muestra cuando se activa la clase 'show' */
+    }
+
+    .menu-hamburguesa {
+        display: block; /* Muestra el ícono de hamburguesa en pantallas pequeñas */
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .menu li {
+        padding: 8px 0;
+        font-size: 10px;
+    }
+
+    .menu li a {
+        font-size: 10px;
+    }
+
+    .top-bar {
+        padding: 5px;
+    }
+
+    .top-bar .user-info span {
+        font-size: 12px;
     }
 }

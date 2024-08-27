@@ -10,8 +10,21 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
+$idRol = isset($_SESSION['ID_Rol']) ? $_SESSION['ID_Rol'] : 0;
+
+$m = null;
+
+if (isset($message)) {
+    $_SESSION['message'] = $message;
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+// Recuperar el mensaje de la sesión y luego eliminarlo
+$m = isset($_SESSION['message']) ? $_SESSION['message'] : null;
+unset($_SESSION['message']);
 $nombreUsuario = $_SESSION['usuario'];
-$idProyecto = isset($_GET['idProyecto']) ? $_GET['idProyecto'] : '0';
+$idProyecto = isset($_GET['idProyecto']) ? $_GET['idProyecto'] : 0;
 
 if (isset($_GET['Volver'])) {
     session_destroy();
@@ -31,71 +44,122 @@ if (isset($_GET['Volver'])) {
     <title>Categorías</title>
     <link rel="website icon" type="png" href="../vista/img/logo2.png">
 </head>
+<style>
+    /* Estilos básicos para el toast */
+    #toast {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+    }
+
+    #toast.show {
+        visibility: visible;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+</style>
+
 <body>
     <?php imprimirTopBar($nombreUsuario); ?>
-    <div class="contenedor" style="margin-left: 5px; margin-left: 60px;">
-        <div class="barra-lateral">
-            <?php imprimirBarraLateral(); ?>
+    <div class="contenedor" >
+        <div class="barra-lateral" id="barra-lateral">
+            <?php imprimirBarraLateral($idRol); ?>
         </div>
         <div class="contenido">
-            <h1> <a href="proyecto_controlador.php"><?php echo $proyecto['nombre'] ?></a> > Categorías</h1>
+            <h1> <a href="proyecto_controlador.php"><?php echo $proyecto['Nombre'] ?></a> > Categorías</h1>
         </div>
     </div>
-
-    <div class="container" style="max-width: 1200px; margin-left: 40px; margin-right: 5px;">
+    <?php if (isset($message)): ?>
+        <div id="toast"><?= htmlspecialchars($message) ?></div>
+    <?php endif; ?>
+    <div class="container">
         <div class="contenedor-categoria px-6 pt-5">
             <div id="tabla_div">
                 <a href="#" class="modal_abrir btn btn-primary" onClick="agregarCategoria();">Agregar categoría</a>
-                <table id="tabla" class="table table-striped" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Estado</th>
-                            <th>Nombre</th>
-                            <th>Presupuesto</th>
-                            <th>Monto Gastado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (isset($data) && is_array($data)) {
-                            foreach ($data as $row) {
-                                if (is_array($row)) {
-                                    $row['monto_presupuesto'] = 0.00; if( isset( $dataPresupuesto[$row['ID_Categoria']] )) $row['monto_presupuesto'] = array_sum( $dataPresupuesto[$row['ID_Categoria']] );
-                                    $row['monto_gastado'] = 0.00; if( isset( $dataGasto[$row['ID_Categoria']] )) $row['monto_gastado'] = array_sum( $dataGasto[$row['ID_Categoria']] );
-                                    $claseGastado = $row['monto_gastado'] > $row['monto_presupuesto'] ? 'bg-danger text-white' : 'bg-success text-white';
+                <div class="table-container">
+                    <table id="tabla" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Nombre</th>
+                                <th>Presupuesto</th>
+                                <th>Monto Gastado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (isset($data) && is_array($data)) {
+                                foreach ($data as $row) {
+                                    if (is_array($row)) {
+                                        $row['monto_presupuesto'] = 0.00;
+                                    if (isset($dataPresupuesto[$row['ID_Categoria']])) $row['monto_presupuesto'] = array_sum($dataPresupuesto[$row['ID_Categoria']]);
 
-                                    echo "<tr>";
-                                    $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
-                                    echo "<td>" . htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['Nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                    echo "<td>". number_format( $row['monto_presupuesto'], 2) ."</td>";
-                                    echo "<td class='$claseGastado'>". number_format( $row['monto_gastado'], 2) ."</td>";
-                                    echo "<td>
-                                            <a href='../controlador/item_controlador.php?idCategoria=".$row['ID_Categoria']."&idProyecto=".$idProyecto."' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
-                                            <a onClick='buscarCategoria(this)' class='btn-azul' data-id='".$row['ID_Categoria']."' data-nombre='".$row['Nombre']."' data-estado='".$row['Estado']."'><img src='../vista/img/editar.png' alt='editar'></a>
-                                            <a href='?eliminarId=".$row['ID_Categoria']."&idProyecto=".$idProyecto."' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                        </td>";
-                                    echo "</tr>";
-                                } else {
-                                    echo "<tr><td colspan='3'>Dato incorrecto en la fila.</td></tr>";
+                                        echo "<tr>";
+                                        $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
+                                        echo "<td>" . htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['Nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                        echo "<td>" . $row['monto_presupuesto'] . "</td>";
+                                        echo "<td>0.00</td>";
+                                        echo "<td>
+                                                <a href='../controlador/item_controlador.php?idCategoria=".$row['ID_Categoria']."&idProyecto=".$idProyecto."' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
+                                                <a onClick='buscarCategoria(this)' class='btn-azul' data-id='".$row['ID_Categoria']."' data-nombre='".$row['Nombre']."' data-estado='".$row['Estado']."'><img src='../vista/img/editar.png' alt='editar'></a>
+                                                <a href='?eliminarId=".$row['ID_Categoria']."&idProyecto=".$idProyecto."' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
+                                            </td>";
+                                        echo "</tr>";
+                                    } else {
+                                        echo "<tr><td colspan='3'>Dato incorrecto en la fila.</td></tr>";
+                                    }
                                 }
+                            } else {
+                                echo "<tr><td colspan='3'>No hay datos disponibles.</td></tr>";
                             }
-                        } else {
-                            echo "<tr><td colspan='3'>No hay datos disponibles.</td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <!-- Empty footer -->
-                        </tr>
-                    </tfoot>
-                </table>
+                            ?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <!-- Empty footer -->
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <section id="modalCategoria" class="modal_section">
         <div class="modal__contenedor">
             <!-- Primer Contenedor (originalmente segundo) -->
@@ -137,6 +201,7 @@ if (isset($_GET['Volver'])) {
                     </div>
                 </center>
                 <form id="formCategoria" action="" method="POST">
+                    <input type="hidden" id="categoriaId" name="categoriaId">
                     <div class="form-group">
                         <label for="estado">Estado</label>
                         <select class="form-control" id="estado" name="estado">
@@ -157,13 +222,48 @@ if (isset($_GET['Volver'])) {
             </div>
         </div>
     </section>
+    <?php if (isset($m)):
+    ?>
+        <div id="toast"><?= htmlspecialchars($m)
+                        ?></div>
+    <?php
+    endif; ?>
 
+    <script>
+        // JavaScript para mostrar el toast
+        window.onload = function() {
+            var toast = document.getElementById("toast");
+            if (toast) {
+                toast.className = "show";
+                setTimeout(function() {
+                    toast.className = toast.className.replace("show", "");
+                }, 3000);
+            }
+        };
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var hamburguesa = document.getElementById('hamburguesa');
+            var barraLateral = document.getElementById('barra-lateral');
+            
+            hamburguesa.addEventListener('click', function() {
+                barraLateral.classList.toggle('show'); // Alterna la visibilidad de la barra lateral
+                
+                // Si la barra lateral se muestra, mueve el ícono de hamburguesa
+                if (barraLateral.classList.contains('show')) {
+                    hamburguesa.style.transform = 'translateX(150px)'; // Desplaza el ícono 200px a la derecha
+                } else {
+                    hamburguesa.style.transform = 'translateX(0)'; // Restaura la posición original
+                }
+            });
+        });
+    </script>
     <script src="../vista/js/jquery-3.7.1.js"></script>
     <script src="../vista/js/bootstrap.bundle.min.js"></script>
     <script src="../vista/js/dataTables.js"></script>
     <script src="../vista/js/dataTables.bootstrap5.js"></script>
     <script src="../vista/js/tableScript.js"></script>
     <script src="../vista/js/modal_categoria.js"></script>
-    
+
 </body>
 </html>

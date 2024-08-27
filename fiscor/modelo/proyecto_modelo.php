@@ -46,7 +46,8 @@ class Proyecto {
     }
 
     public function agregarProyecto() {
-        $sql = "INSERT INTO proyecto (Nombre, Descripcion) VALUES (:Nombre, :Descripcion)";
+        $sql = "INSERT INTO proyecto (Nombre, Descripcion) 
+                VALUES (:Nombre, :Descripcion)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':Nombre', $this->Nombre);
         $stmt->bindParam(':Descripcion', $this->Descripcion);
@@ -56,7 +57,8 @@ class Proyecto {
 
     public function buscarTodos() {
         try {
-            $sql = "SELECT * FROM proyecto";
+            $sql = "SELECT * 
+                    FROM proyecto";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +69,9 @@ class Proyecto {
     }
 
     public function buscarProyectoPorID($ID_Proyecto) {
-        $sql = "SELECT * FROM proyecto WHERE ID_Proyecto = :ID_Proyecto";
+        $sql = "SELECT * 
+                FROM proyecto 
+                WHERE ID_Proyecto = :ID_Proyecto";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':ID_Proyecto', $ID_Proyecto);
         $stmt->execute();
@@ -76,7 +80,9 @@ class Proyecto {
 
     public function buscarPresupuesto() {
         try {
-            $sql = "SELECT item.id_item, item.ID_Categoria, presupuesto.id_proyecto, presupuesto.monto_presupuesto FROM item, presupuesto WHERE item.id_item = presupuesto.id_item";
+            $sql = "SELECT item.id_item, item.ID_Categoria, presupuesto.id_proyecto, presupuesto.monto_presupuesto 
+                    FROM item, presupuesto 
+                    WHERE item.id_item = presupuesto.id_item";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -85,19 +91,12 @@ class Proyecto {
             return array();
         }
     }
-    public function obtenerListaGastos() {
-        try {
-            $sql = "SELECT * FROM gasto";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Error al buscar todos los gastos: " . $e->getMessage(), 0);
-            return array();
-        }
-    }
+
+
     public function actualizarProyecto() {
-        $sql = "UPDATE proyecto SET Nombre = :Nombre, Descripcion = :Descripcion, Estado = :Estado WHERE ID_Proyecto = :ID_Proyecto";
+        $sql = "UPDATE proyecto 
+                SET Nombre = :Nombre, Descripcion = :Descripcion, Estado = :Estado 
+                WHERE ID_Proyecto = :ID_Proyecto";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':ID_Proyecto', $this->ID_Proyecto);
         $stmt->bindParam(':Nombre', $this->Nombre);
@@ -107,7 +106,9 @@ class Proyecto {
     }
 
     public function tienePresupuestoAsociado() {
-        $sql = "SELECT COUNT(*) FROM presupuesto WHERE ID_Proyecto = :id";
+        $sql = "SELECT COUNT(*) 
+                FROM presupuesto 
+                WHERE id_proyecto = :id";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':id', $this->ID_Proyecto, PDO::PARAM_INT);
         $stmt->execute();
@@ -117,7 +118,9 @@ class Proyecto {
     }
 
     public function eliminarProyecto() {
-        $sql = "DELETE FROM proyecto WHERE ID_Proyecto = :id";
+        $sql = "DELETE 
+                FROM proyecto 
+                WHERE ID_Proyecto = :id";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':id', $this->ID_Proyecto, PDO::PARAM_INT);
         return $stmt->execute();
@@ -125,14 +128,15 @@ class Proyecto {
 
     public function contarProyectos() {
         try {
-            $sql = "SELECT COUNT(*) as total FROM proyecto";
+            $sql = "SELECT COUNT(*) as total 
+                    FROM proyecto";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
             return $resultado['total'];
         } catch (PDOException $e) {
             error_log("Error al contar los proyectos: " . $e->getMessage(), 0);
-            return 0; // En caso de error, retornar 0
+            return 0;
         }
     }
 }

@@ -3,10 +3,24 @@
     require_once("../modelo/presupuesto_modelo.php");
     require_once("vista_controlador.php");
 
-    // Crear instancia del modelo de presupuesto y proyecto
     $presupuestoModelo = new PresupuestoModelo();
     $proyectoModelo = new Proyecto();
 
+    // Si no es una solicitud AJAX, cargar los datos iniciales
+    $datosPresupuesto = $presupuestoModelo->consultar(); 
+
+    // Formatear los datos para Chart.js
+    $datosFormateados = array();
+    foreach ($datosPresupuesto as $dato) {
+        $datosFormateados[] = array(
+            'proyecto' => $dato['Nombre'], 
+            'presupuesto' => $dato['total_presupuesto']
+        );
+    }
+    // Enviar los datos en formato JSON para uso en frontend
+    $datosJSON = json_encode($datosFormateados);
+
+    $proyectos = $proyectoModelo->buscarTodos();
     // Verificar si la solicitud se realiza vía AJAX
     if (isset($_GET['id_proyecto'])) {
         $id_proyecto = $_GET['id_proyecto'];
@@ -20,24 +34,10 @@
         exit;
     }
 
-    // Si no es una solicitud AJAX, cargar los datos iniciales
-    $datosPresupuesto = $presupuestoModelo->consultar(); 
-
-    // Formatear los datos para Chart.js
-    $datosFormateados = array();
-    foreach ($datosPresupuesto as $dato) {
-        $datosFormateados[] = array(
-            'proyecto' => $dato['Nombre'], 
-            'presupuesto' => $dato['total_presupuesto']
-        );
-    }
-
-    // Enviar los datos en formato JSON para uso en frontend
-    $datosJSON = json_encode($datosFormateados);
-
-    $proyectos = $proyectoModelo->buscarTodos();
-
+    //total de proyectos
     $totalpro = $proyectoModelo->contarProyectos();
+
+    //total de presupuesto
     $totalpre = $presupuestoModelo->sumarPresupuestos(); 
 
     // Cargar el proyecto por defecto

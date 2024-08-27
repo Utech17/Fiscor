@@ -9,6 +9,16 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: ../index.php");
     exit();
 }
+$m = null;
+if (isset($message)) {
+    $_SESSION['message'] = $message;
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+// Recuperar el mensaje de la sesión y luego eliminarlo
+$m = isset($_SESSION['message']) ? $_SESSION['message'] : null;
+unset($_SESSION['message']);
 
 if (isset($_GET['Volver'])) {
     session_destroy();
@@ -19,6 +29,7 @@ if (isset($_GET['Volver'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,58 +39,124 @@ if (isset($_GET['Volver'])) {
     <title>Usuario</title>
     <link rel="icon" type="image/png" href="../vista/img/logo2.png">
 </head>
+<style>
+    /* Estilos básicos para el toast */
+    #toast {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+    }
+
+    #toast.show {
+        visibility: visible;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+</style>
+
 <body>
     <?php imprimirTopBar($usuario); ?>
-    <div class="contenedor" style="margin-left: 5px; margin-left: 60px;">
-        <div class="barra-lateral">
-            <?php imprimirBarraLateral(); ?>
+    <div class="contenedor">
+        <div class="barra-lateral"  id="barra-lateral">
+            <?php imprimirBarraLateral($idRol); ?>
         </div>
 
         <div class="contenido">
             <h1>Usuario</h1>
         </div>
     </div>
+    <?php if (isset($message)): ?>
+        <div id="toast"><?= htmlspecialchars($message) ?></div>
+    <?php endif; ?>
 
-    <div class="container" style="max-width: 1200px; margin-left: 40px; margin-right: 5px;">
+    <script>
+        // JavaScript para mostrar el toast
+        window.onload = function() {
+            var toast = document.getElementById("toast");
+            if (toast) {
+                toast.className = "show";
+                setTimeout(function() {
+                    toast.className = toast.className.replace("show", "");
+                }, 3000);
+            }
+        };
+    </script>
+    <div class="container">
         <div class="contenedor-usuario px-6 pt-5">
             <div id="tabla_div" class="table-responsive">
                 <?php if ($idRol == 1): ?>
                     <a href="#" class="modal_abrir btn btn-primary" onClick="agregarUsuario();">Agregar Usuario</a>
-                    <table id="tabla" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Usuario</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Rol</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($usuarios as $usuario): ?>
+                    <div class="table-container">    
+                        <table id="tabla" class="table table-striped" style="width:100%">
+                            <thead>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php 
-                                        if ($usuario['ID_Rol'] == 0) {
-                                            echo "Usuario";
-                                        } elseif ($usuario['ID_Rol'] == 1) {
-                                            echo "Administrador";
-                                        } else {
-                                            echo "Rol Desconocido";
-                                        }
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <a onClick="editarUsuario(this)" class="btn-azul" data-id="<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-usuario="<?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-nombre="<?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?>" data-apellido="<?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?>" data-rol="<?php echo htmlspecialchars($usuario['ID_Rol'], ENT_QUOTES, 'UTF-8'); ?>"><img src="../vista/img/editar.png" alt="editar"></a>
-                                        <a href="?eliminarId=<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" class="btn-rojo" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?');"><img src="../vista/img/eliminar.png" alt="eliminar"></a>
-                                    </td>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Rol</th>
+                                    <th>Acciones</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($usuarios as $usuario): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                        <td><?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                        <td><?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                        <td><?php
+                                            if ($usuario['ID_Rol'] == 0) {
+                                                echo "Usuario";
+                                            } elseif ($usuario['ID_Rol'] == 1) {
+                                                echo "Administrador";
+                                            } else {
+                                                echo "Rol Desconocido";
+                                            }
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <a onClick="editarUsuario(this)" class="btn-azul" data-id="<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-usuario="<?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-nombre="<?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?>" data-apellido="<?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?>" data-rol="<?php echo htmlspecialchars($usuario['ID_Rol'], ENT_QUOTES, 'UTF-8'); ?>"><img src="../vista/img/editar.png" alt="editar"></a>
+                                            <a href="?eliminarId=<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" class="btn-rojo" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?');"><img src="../vista/img/eliminar.png" alt="eliminar"></a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php else: ?>
+                <div class="table-container">
                     <table id="tabla" class="table table-striped" style="width:100%">
                         <thead>
                             <tr>
@@ -102,6 +179,7 @@ if (isset($_GET['Volver'])) {
                             </tr>
                         </tbody>
                     </table>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -139,12 +217,50 @@ if (isset($_GET['Volver'])) {
             </form>
         </div>
     </section>
+    <?php if (isset($m)):
+    ?>
+        <div id="toast"><?= htmlspecialchars($m)
+                        ?></div>
+    <?php
+    endif; ?>
 
+    <script>
+        // JavaScript para mostrar el toast
+        window.onload = function() {
+            var toast = document.getElementById("toast");
+            if (toast) {
+
+                toast.className = "show";
+                setTimeout(function() {
+                    toast.className = toast.className.replace("show", "");
+                }, 3000);
+            }
+        };
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var hamburguesa = document.getElementById('hamburguesa');
+            var barraLateral = document.getElementById('barra-lateral');
+            
+            hamburguesa.addEventListener('click', function() {
+                barraLateral.classList.toggle('show'); // Alterna la visibilidad de la barra lateral
+                
+                // Si la barra lateral se muestra, mueve el ícono de hamburguesa
+                if (barraLateral.classList.contains('show')) {
+                    hamburguesa.style.transform = 'translateX(150px)'; // Desplaza el ícono 200px a la derecha
+                } else {
+                    hamburguesa.style.transform = 'translateX(0)'; // Restaura la posición original
+                }
+            });
+        });
+    </script>
     <script src="../vista/js/jquery-3.7.1.js"></script>
     <script src="../vista/js/bootstrap.bundle.min.js"></script>
     <script src="../vista/js/dataTables.js"></script>
     <script src="../vista/js/dataTables.bootstrap5.js"></script>
     <script src="../vista/js/tableScript.js"></script>
     <script src="../vista/js/modal_usuario.js"></script>
+    <script src="../vista/js/modal_notificacion.js"></script>
+    
 </body>
 </html>

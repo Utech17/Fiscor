@@ -4,59 +4,83 @@
 
     $objItem = new ItemModelo();
 
+    $message = null;
+    $idRol = isset($_SESSION['ID_Rol']) ? $_SESSION['ID_Rol'] : 0;
+
     $proyectoExiste = false;
+    $categoriaExiste = false;
+
+    // Verificar la existencia del proyecto
     if (isset($_GET['idProyecto'])) {
         $idProyecto = $_GET['idProyecto'];
-        $objItem->setID_Proyecto( $idProyecto );
+        $objItem->setID_Proyecto($idProyecto);
         $proyecto = $objItem->buscarProyectoNombreId();
-        if( count( $proyecto) > 0 ) $proyectoExiste = true;
+        
+        // Verificar si el proyecto fue encontrado
+        if ($proyecto) {
+            $proyectoExiste = true;
+        } else {
+            $message = "Proyecto no válido";
+            header("Location: ../controlador/proyecto_controlador.php");
+            exit();
+        }
     }
-    if( !$proyectoExiste )
-        echo "<script>alert('Proyecto no válido'); location.href='proyecto_controlador.php';</script>";
 
-    $categoriaExiste = false;
-    if (isset($_GET['idCategoria'])) {
+    // Verificar la existencia de la categoría si el proyecto es válido
+    if ($proyectoExiste && isset($_GET['idCategoria'])) {
         $idCategoria = $_GET['idCategoria'];
-        $objItem->setID_Categoria( $idCategoria );
+        $objItem->setID_Categoria($idCategoria);
         $categoria = $objItem->buscarCategoriaNombreId();
-        if( count( $categoria ) > 0 ) $categoriaExiste = true;
+        
+        // Verificar si la categoría fue encontrada
+        if ($categoria) {
+            $categoriaExiste = true;
+        } else {
+            echo "<script>alert('Categoría no válida'); location.href='../controlador/categoria_controlador.php?idProyecto=$idProyecto';</script>";
+            exit();
+        }
     }
-    if( !$categoriaExiste )
-        echo "<script>alert('Categoría no válida'); location.href='../controlador/categoria_controlador.php?idProyecto=$idProyecto';</script>";
 
     $data = $objItem->buscarItemsConPresupuesto($idProyecto, $idCategoria);
-    $items= $objItem->obtenerItemsPorCategoriaSimple($idCategoria, $idProyecto);
-    $dataAux = $objItem->obtenerListaGastos();
-    $dataGasto = array(); foreach($dataAux as $c ){
-        if( $c['ID_Proyecto'] == $idProyecto ) $dataGasto[ $c['ID_Item'] ][] = $c['Monto_Gasto'];
-    }
+    $items = $objItem->obtenerItemsPorCategoriaSimple($idCategoria, $idProyecto);
 
+    // Procesar el formulario de adición de presupuesto
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_item']) && isset($_POST['cantidad']) && isset($_POST['presupuesto'])) {
         $id_item = $_POST['id_item'];
         $cantidad = $_POST['cantidad'];
         $presupuesto = $_POST['presupuesto'];
+
         // Crear instancia del modelo
         $itemModel = new ItemModelo();
         $itemModel->setID_Item($id_item);
         $itemModel->setCantidad($cantidad);
         $itemModel->setPresupuesto($presupuesto);
+
         // Asegúrate de obtener el ID del proyecto de alguna forma
         if (isset($idProyecto)) {
             $itemModel->setID_Proyecto($idProyecto);
+
             // Llamar al método para agregar el presupuesto
             $resultado = $itemModel->agregarPresupuesto();
+
             if ($resultado) {
-                echo "<script>alert('Elemento agregado exitosamente.'); location.href='../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria';</script>";
+                $_SESSION['message'] = 'Elemento agregado exitosamente.';
             } else {
-                echo "<script>alert('Hubo un error al agregar el elemento.'); location.href='../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria';</script>";
+                $_SESSION['message'] = 'Hubo un error al agregar el elemento.';
             }
+            header("Location: ../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria");
+            exit();
         } else {
-            echo "<script>alert('ID del proyecto no encontrado.'); location.href='../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria';</script>";
+            $_SESSION['message'] = 'ID del proyecto no encontrado.';
+            header("Location: ../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria");
+            exit();
         }
     }
 
+    // Procesar el formulario de adición/modificación de ítem
     if (isset($_POST['Enviar2'])) {
         if (isset($_POST['nombre'], $_POST['estado'], $_POST['cantidad'], $_POST['presupuesto'], $_POST['proyectoId'], $_POST['categoriaId'], $_POST['itemId'])) {
+
             // Obtener datos del formulario
             $idProyecto = $_POST['proyectoId'];
             $idCategoria = $_POST['categoriaId'];
@@ -74,34 +98,39 @@
             // Agregar o actualizar
             if ($idItem == 0) {
                 $resultado = $objItem->agregarItem();
+                $mensaje = 'agregado';
             } else if ($idItem > 0) {
                 $resultado = $objItem->actualizarItem();
+                $mensaje = 'modificado';
             }
 
             // Verificar resultado de la operación
             if ($resultado == 1) {
-                if ($idItem == 0) {
-                    echo "<script>alert('Elemento agregado con éxito'); location.href='../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria';</script>";
-                } else {
-                    echo "<script>alert('Elemento modificado con éxito'); location.href='../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria';</script>";
-                }
+                $_SESSION['message'] = "Elemento $mensaje con éxito";
             } else {
-                echo "<script>alert('Error al " . ($idItem == 0 ? "agregar" : "modificar") . " item');</script>";
+                $_SESSION['message'] = "Error al $mensaje item";
             }
+            header("Location: ../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria");
+            exit();
         } else {
-            echo "<script>alert('Faltan datos para agregar/modificar el item');</script>";
+            $_SESSION['message'] = 'Faltan datos para agregar/modificar el item';
+            header("Location: ../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria");
+            exit();
         }
     }
 
+    // Procesar eliminación de ítem
     if (isset($_GET['eliminarId'])) {
         $objItem->setID_Item($_GET['eliminarId']);
         $resultado = $objItem->eliminarPresupuestoItem($idProyecto);
 
-        if( $resultado )
-            echo "<script>alert('Elemento eliminado con éxito'); location.href='../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria';</script>";
-        else
-            echo "<script>alert('Error al eliminar Elemento');</script>";
+        if ($resultado) {
+            $_SESSION['message'] = 'Elemento eliminado con éxito';
+        } else {
+            $_SESSION['message'] = 'Error al eliminar el elemento';
+        }
+        header("Location: ../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria");
+        exit();
     }
 
     require_once("../vista/item_vista.php");
-?>
