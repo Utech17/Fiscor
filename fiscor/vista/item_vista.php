@@ -80,8 +80,6 @@ if (isset($_GET['Volver'])) {
                                         if (isset($dataGasto[$row['id_item']])) {
                                             $row['monto_gastado'] = array_sum($dataGasto[$row['id_item']]);
                                         }
-                                        
-                                        // Determinar el estilo de borde y color del texto
                                         $borderStyle = $row['monto_gastado'] > $row['monto_presupuesto'] 
                                             ? 'border-bottom: 2px solid red; color: red;' 
                                             : 'border-bottom: 2px solid green; color: green;';

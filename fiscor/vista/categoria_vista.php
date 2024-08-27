@@ -60,7 +60,7 @@ if (isset($_GET['Volver'])) {
     <div class="container">
         <div class="contenedor-categoria px-6 pt-5">
             <div id="tabla_div">
-                <a href="#" class="modal_abrir btn btn-primary" onClick="agregarCategoria();">Agregar categoría</a>
+                <a href="#" class="modal_abrir btn btn-primary" onClick="agregarCategoria();">Agregar Categoría</a>
                 <div class="table-container">
                     <table id="tabla" class="table table-striped" style="width:100%">
                         <thead>
