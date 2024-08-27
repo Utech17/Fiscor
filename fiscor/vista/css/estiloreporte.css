@@ -1,0 +1,66 @@
+/*Estilos para pantalla Reportes */
+
+.boton-impresion {
+    background-color: #045fb4;
+    color: #fff;
+    border: none;
+    padding: 20px 30px;
+    cursor: pointer;
+    border-radius: 15px;
+    margin-top: 20px;
+  }
+  
+  .boton-impresion:hover {
+    background-color: #004586;
+  }
+  
+  .icono-impresion {
+    color: #fff;
+    margin-right: 5px;
+  }
+  
+  /* Estilo para el menú desplegable */
+  .select-menu {
+    width: 200px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  /* Estilo para las opciones del menú desplegable */
+  .select-menu option {
+    padding: 10px;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  /* Estilo para el menú desplegable cuando se enfoca */
+  .select-menu:focus {
+    outline: none;
+    border-color: #045fb4;
+    box-shadow: 0 0 5px #045097;
+  }
+  
+  /* Estilo para las opciones del menú desplegable cuando se pasa el cursor sobre ellas */
+  .select-menu option:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .titulo {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .contenedor-imagen {
+    text-align: center;
+  }
+  
+  .imagen1 {
+    width: 500px;
+    height: auto;
+    display: inline-block;
+  }
+  
