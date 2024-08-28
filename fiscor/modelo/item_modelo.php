@@ -183,14 +183,32 @@
 
 		public function eliminarPresupuestoItem($idProyecto) {
 			try {
-				$sql = "DELETE 
-						FROM presupuesto 
-						WHERE id_item = :id_item AND id_proyecto = :id_proyecto";
-				$stmt = $this->conexion->prepare($sql);
-				$stmt->bindParam(':id_item', $this->id_item);
-				$stmt->bindParam(':id_proyecto', $idProyecto);
-				$resul = $stmt->execute();
-				return $resul;
+				// Verificar si existen registros en la tabla gasto que estén relacionados con el ítem y proyecto
+				$sqlCheck = "SELECT COUNT(*) 
+							 FROM gasto 
+							 WHERE ID_Item = :id_item AND ID_Proyecto = :id_proyecto";
+				$stmtCheck = $this->conexion->prepare($sqlCheck);
+				$stmtCheck->bindParam(':id_item', $this->id_item);
+				$stmtCheck->bindParam(':id_proyecto', $idProyecto);
+				$stmtCheck->execute();
+				$count = $stmtCheck->fetchColumn();
+		
+				if ($count > 0) {
+					// Si existen registros relacionados en gasto, no se puede eliminar el presupuesto
+					error_log("No se puede eliminar el presupuesto porque existen registros relacionados en gasto.", 0);
+					return false;
+				}
+		
+				// Si no existen registros en gasto, proceder con la eliminación
+				$sqlDelete = "DELETE 
+							  FROM presupuesto 
+							  WHERE id_item = :id_item AND id_proyecto = :id_proyecto";
+				$stmtDelete = $this->conexion->prepare($sqlDelete);
+				$stmtDelete->bindParam(':id_item', $this->id_item);
+				$stmtDelete->bindParam(':id_proyecto', $idProyecto);
+				$result = $stmtDelete->execute();
+		
+				return $result;
 			} catch (PDOException $e) {
 				error_log("Error al eliminar el presupuesto del ítem: " . $e->getMessage(), 0);
 				return false;

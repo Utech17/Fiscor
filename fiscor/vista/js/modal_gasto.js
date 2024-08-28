@@ -9,7 +9,8 @@ function modalGastoForm(){
 }
 
 function cerrarModal(){
-    $('.modalGasto').removeClass('modal--show');
+    $('#modalGasto').removeClass('modal--show');
+    $('#modalEliminar').removeClass('modal--show');
 }
 
 function cambiarFiltroProyecto( idproyecto ){
@@ -76,9 +77,7 @@ function cambiarFiltro(){
             <td>${ row['Monto_Gasto'] }</td>
             <td>${ row['proyecto'] }</td>
             <td>
-                <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='${row['ID_Gasto']}'>
-                    <img src='../vista/img/eliminar.png' alt='eliminar'>
-                </a>
+                <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='${row['ID_Gasto']}'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
             </td>
         </tr>`;
     })
