@@ -44,7 +44,6 @@ function mostrarCamposPresupuesto() {
 }
 
 function eliminarItem(input) {
-    console.log('Eliminar ID:', input.getAttribute('data-id2'));
     $('#modalEliminar').addClass('modal--show');
     $('#eliminarId').val(input.getAttribute('data-id2'));
   }
