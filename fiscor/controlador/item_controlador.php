@@ -1,5 +1,6 @@
 <?php
     require_once("../modelo/item_modelo.php");
+    require_once("../modelo/gastos_modelo.php");
     require_once("vista_controlador.php");
 
     $objItem = new ItemModelo();
