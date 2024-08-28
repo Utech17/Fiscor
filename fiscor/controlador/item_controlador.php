@@ -125,8 +125,8 @@
     }
 
     // Procesar eliminación de ítem
-    if (isset($_GET['eliminarId'])) {
-        $objItem->setID_Item($_GET['eliminarId']);
+    if (isset($_POST['eliminarId'])) {
+        $objItem->setID_Item($_POST['eliminarId']);
         $resultado = $objItem->eliminarPresupuestoItem($idProyecto);
 
         if ($resultado) {

@@ -92,8 +92,8 @@ if (isset($_GET['Volver'])) {
                                         echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
                                         echo "<td>
                                             <a onClick='buscarItem(this)' class='btn-azul' data-id='" . $row['id_item'] . "' data-nombre='" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "' data-estado='" . $row['estado'] . "' data-cantidad='" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "' data-presupuesto='" . number_format($row['monto_presupuesto'], 2) . "'><img src='../vista/img/editar.png' alt='editar'></a>
-                                            <a href='?eliminarId=" . $row['id_item'] . "&idProyecto=" . $idProyecto . "&idCategoria=" . $idCategoria . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                        </td>";
+                                            <a onClick='eliminarItem(this)' class='btn-rojo' data-id2='" . $row['id_item'] . "&idProyecto=" . $idProyecto . "&idCategoria=" . $idCategoria . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
+                                            </td>";
                                         echo "</tr>";
                                     }
                                 } else {
@@ -185,6 +185,19 @@ if (isset($_GET['Volver'])) {
                     </div>
                 </form>
             </div>
+        </div>
+    </section>
+    <section id="modalEliminar" class="modal_section modalItem">
+        <div class="modal__contenedor">
+            <form id="itemEliminarForm" action="" method="POST">
+                <input type="hidden" id="eliminarId" name="eliminarId">
+                <b>¿Estás seguro que deseas eliminar el Item?</b><br><br>
+                Una vez realizado el proceso de eliminación no podrás recuperar el contenido ni la información existente.<br><br>
+                <div class="modal__botones-contenedor">
+                    <input type="button" value="Cancelar" class="btn btn-secondary" onClick="cerrarModal()">
+                    <input id="buttonEliminar" type="submit" name="Confirmar" class="btn btn-primary">
+                </div>
+            </form>
         </div>
     </section>
     <?php if (isset($m)):

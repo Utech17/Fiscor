@@ -16,6 +16,7 @@ function mostrarContenedor2() {
 
 function cerrarModal() {
     $('#modalItem').removeClass('modal--show');
+    $('#modalEliminar').removeClass('modal--show');
 }
 
 function buscarItem(input) {
@@ -41,6 +42,12 @@ function mostrarCamposPresupuesto() {
         camposPresupuesto.style.display = 'none';
     }
 }
+
+function eliminarItem(input) {
+    console.log('Eliminar ID:', input.getAttribute('data-id2'));
+    $('#modalEliminar').addClass('modal--show');
+    $('#eliminarId').val(input.getAttribute('data-id2'));
+  }
 
 function allowOnlyFloat(evt) {
     // Permitir: Backspace, Delete, Tab, Escape, Enter y .

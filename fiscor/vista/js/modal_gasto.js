@@ -110,6 +110,7 @@ function filtroFecha(){
 }
 
 function eliminarGasto(input) {
+    console.log('Eliminar ID:', input.getAttribute('data-id'));
     $('#modalEliminar').addClass('modal--show');
     $('#eliminarId').val(input.getAttribute('data-id'));
 }
