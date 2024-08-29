@@ -132,7 +132,7 @@
         if ($resultado) {
             $_SESSION['message'] = 'Elemento eliminado con éxito';
         } else {
-            $_SESSION['message'] = 'Error al eliminar el elemento';
+            $_SESSION['message'] = 'Este proyecto no puede ser eliminado ya que tiene al menos un gasto asociado. Si hay varios gastos asociados, deberá eliminarlos todos antes de poder eliminar el proyecto y/o su contenido.';
         }
         header("Location: ../controlador/item_controlador.php?idProyecto=$idProyecto&idCategoria=$idCategoria");
         exit();
