@@ -44,17 +44,17 @@
     if ($totalpre === null || $totalpre == 0) {
         $totalpre = "0.00";
     } else {
-        // Formatear el número para mostrar dos decimales
-        $totalpre = number_format($totalpre, 2, '.', '');
+        // Formatear el número para mostrar separadores de miles y dos decimales
+        $totalpre = number_format($totalpre, 2, '.', ',');
     }
 
-    //total de gastos
+    // Total de gastos
     $totalg = $Gastos->sumarTodosLosGastos();
     if ($totalg === null || $totalg == 0) {
         $totalg = "0.00";
     } else {
-        // Formatear el número para mostrar dos decimales
-        $totalg = number_format($totalg, 2, '.', '');
+        // Formatear el número para mostrar separadores de miles y dos decimales
+        $totalg = number_format($totalg, 2, '.', ',');
     }
 
     // Cargar el proyecto por defecto
