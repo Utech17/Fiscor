@@ -39,8 +39,14 @@
     //total de proyectos
     $totalpro = $proyectoModelo->contarProyectos();
 
-    //total de presupuesto
-    $totalpre = $presupuestoModelo->sumarPresupuestos(); 
+    // Total de presupuesto
+    $totalpre = $presupuestoModelo->sumarPresupuestos();
+    if ($totalpre === null || $totalpre == 0) {
+        $totalpre = "0.00";
+    } else {
+        // Formatear el número para mostrar dos decimales
+        $totalpre = number_format($totalpre, 2, '.', '');
+    }
 
     //total de gastos
     $totalg = $Gastos->sumarTodosLosGastos();

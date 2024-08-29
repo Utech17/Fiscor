@@ -109,27 +109,33 @@ if (isset($_GET['Volver'])) {
                         </tr>
                     </thead>
                     <tbody id="tablaDataGasto">
-                        <?php
-                        if (isset($data) && is_array($data)) {
-                            foreach ($data as $row) {
-                                $proyecto = isset($lista_proyectos[ $row['ID_Proyecto'] ]) ? $lista_proyectos[ $row['ID_Proyecto'] ] : '';
-                                $item = ''; foreach($lista_items as $c){
-                                    if($c['id_item'] == $row['ID_Item']) $item = $c['nombre'];
+                    <?php
+                    if (isset($data) && is_array($data)) {
+                        foreach ($data as $row) {
+                            // Obtener el nombre del proyecto y el ítem
+                            $proyecto = isset($lista_proyectos[$row['ID_Proyecto']]) ? $lista_proyectos[$row['ID_Proyecto']] : '';
+                            $item = ''; 
+                            foreach ($lista_items as $c) {
+                                if ($c['id_item'] == $row['ID_Item']) {
+                                    $item = $c['nombre'];
+                                    break; // Salir del bucle una vez que encontramos el ítem
                                 }
-                                echo "<tr>";
-                                    echo "<td>" . $row['Fecha'] . "</td>";
-                                    echo "<td>" . $item . "</td>";
-                                    echo "<td>" . $row['Monto_Gasto'] . "</td>";
-                                    echo "<td>" . $proyecto . "</td>";
-                                    echo "<td>
-                                            <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . $row['ID_Gasto'] . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                        </td>";
-                                echo "</tr>";
                             }
-                        } else {
-                            echo "<tr><td colspan='5'>No hay datos disponibles.</td></tr>";
+
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['Fecha']) . "</td>";
+                            echo "<td>" . htmlspecialchars($item) . "</td>";
+                            echo "<td>" . number_format($row['Monto_Gasto'], 2, '.', ',') . "</td>"; // Formato decimal para Monto_Gasto
+                            echo "<td>" . htmlspecialchars($proyecto) . "</td>";
+                            echo "<td>
+                                    <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . htmlspecialchars($row['ID_Gasto']) . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
+                                </td>";
+                            echo "</tr>";
                         }
-                        ?>
+                    } else {
+                        echo "<tr><td colspan='5'>No hay datos disponibles.</td></tr>";
+                    }
+                    ?>
                     </tbody>
                     <tfoot>
                         <tr>
