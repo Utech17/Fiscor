@@ -107,7 +107,7 @@ function filtroFecha(){
 
     // Verificar si la fecha hasta es mayor que la fecha desde
     if (fechaDesde && fechaHasta && Date.parse(fechaHasta) < Date.parse(fechaDesde)) {
-        alert('La fecha "Hasta" no puede ser menor que la fecha "Desde".');
+        //alert('La fecha "Hasta" no puede ser menor que la fecha "Desde".');
         $('#filtroFechaH').val('');
         return false;
     }

@@ -68,11 +68,11 @@ if (isset($_GET['Volver'])) {
                 <div class="row">
                     <div class="col-sm-2">
                         <label>Fecha desde</label>
-                        <input type="date" class="form-control" id="filtroFechaD" max="<?php echo date('Y-m-d'); ?>" min="<?php echo date('Y-m-d', strtotime('-11 months')); ?>" onChange="cambiarFiltro()">
+                        <input type="date" class="form-control" id="filtroFechaD" max="<?php echo date('Y-m-d'); ?>" onChange="cambiarFiltro()">
                     </div>
                     <div class="col-sm-2">
                         <label>Fecha hasta</label>
-                        <input type="date" class="form-control" id="filtroFechaH" max="<?php echo date('Y-m-d'); ?>" min="<?php echo date('Y-m-d', strtotime('-11 months')); ?>" onChange="cambiarFiltro()">
+                        <input type="date" class="form-control" id="filtroFechaH" max="<?php echo date('Y-m-d'); ?>" onChange="cambiarFiltro()">
                     </div>
                     <div class="col-sm-2">
                         <label>Proyecto</label>
