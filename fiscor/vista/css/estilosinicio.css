@@ -32,8 +32,19 @@ body {
 
 /* Contenedores */
 .contenedor-categoria,
-.contenedor-canvas,
 .contenedor-usuario {
+    background-color: white;
+    border: 1px solid rgba(0.1, 0.1, 0.1, 0.2);
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    width: 85%;
+    max-width: 1200px;
+    margin: 20px auto;
+    margin-left: 135px;
+}
+
+.contenedor-canvas{
     background-color: white;
     border: 1px solid rgba(0.1, 0.1, 0.1, 0.2);
     padding: 20px;
@@ -186,6 +197,15 @@ h2 {
 
 .btn-rojo {
     background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.btn-verde {
+    background-color: #28a745; /* Color verde */
     color: white;
     border: none;
     padding: 5px 10px;

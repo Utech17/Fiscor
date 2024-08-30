@@ -92,20 +92,23 @@ if (isset($_GET['Volver'])) {
                                                 : 'border-bottom: 2px solid green; color: green;';
                                             
                                             // Estilo en línea para la descripción
-                                            $descripcionStyle = 'max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+                                            $descripcionStyle = 'max-width: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
 
                                             echo "<tr>";
-                                            $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
+                                            $estado = ($row['Estado'] == 0) ? 'Inactivo' : (($row['Estado'] == 1) ? 'En Proceso' : 'Finalizado');
                                             echo "<td>" . $estado . "</td>";
                                             echo "<td>" . $row['Nombre'] . "</td>";
                                             echo "<td style='$descripcionStyle'>" . $row['Descripcion'] . "</td>";
                                             echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
                                             echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
-                                            echo "<td>
-                                                <a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
-                                                <a onClick='buscarProyecto(this)' class='btn-azul' data-id='" . $row['ID_Proyecto'] . "' data-estado='" . $row['Estado'] . "' data-nombre='" . $row['Nombre'] . "' data-descripcion='" . $row['Descripcion'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
-                                                <a href='?eliminarId=" . $row['ID_Proyecto'] . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                            </td>";
+                                            echo "<td class='d-flex justify-content-between'>"; 
+                                            echo "<a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul me-1'><img src='../vista/img/ojo.png' alt='ojo'></a>";
+                                            echo "<a onClick='buscarProyecto(this)' class='btn-azul me-1' data-id='" . $row['ID_Proyecto'] . "' data-estado='" . $row['Estado'] . "' data-nombre='" . $row['Nombre'] . "' data-descripcion='" . $row['Descripcion'] . "'><img src='../vista/img/editar.png' alt='editar'></a>";
+                                            if ($idRol == 1) {
+                                                echo "<a href='?finalizare=" . $row['ID_Proyecto'] . "' class='btn-verde me-1'><img src='../vista/img/finalizar.png' alt='finalizar'></a>";
+                                            }
+                                            echo "<a href='?eliminarId=" . $row['ID_Proyecto'] . "' class='btn-rojo me-1'><img src='../vista/img/eliminar.png' alt='eliminar'></a>";
+                                            echo "</td>";
                                             echo "</tr>";
                                         }
                                     } else {

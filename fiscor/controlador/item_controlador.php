@@ -43,10 +43,21 @@
     }
 
     $data = $objItem->buscarItemsConPresupuesto($idProyecto, $idCategoria);
-    $items= $objItem->obtenerItemsPorCategoriaSimple($idCategoria, $idProyecto);
+
+    // Separa los ítems del estado del proyecto
+    $items = isset($data['items']) ? $data['items'] : [];
+    $estadoProyecto = isset($data['estado_proyecto']) ? $data['estado_proyecto'] : null;
+
+    // Obtiene los ítems sin presupuesto (si es necesario para otra funcionalidad)
+    $itemsSimples = $objItem->obtenerItemsPorCategoriaSimple($idCategoria, $idProyecto);
+
+    // Obtiene los gastos asociados a los ítems y los organiza por ID de ítem
     $dataAux = $objItem->obtenerListaGastos();
-    $dataGasto = array(); foreach($dataAux as $c ){
-        if( $c['ID_Proyecto'] == $idProyecto ) $dataGasto[ $c['ID_Item'] ][] = $c['Monto_Gasto'];
+    $dataGasto = array();
+    foreach ($dataAux as $c) {
+        if ($c['ID_Proyecto'] == $idProyecto) {
+            $dataGasto[$c['ID_Item']][] = $c['Monto_Gasto'];
+        }
     }
 
     // Procesar el formulario de adición de presupuesto

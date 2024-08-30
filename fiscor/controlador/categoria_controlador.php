@@ -24,6 +24,9 @@
     }
 
     $data = $objCategoria->buscarCategoriaPorIDProyecto($idProyecto);
+    $categorias = isset($data['categorias']) ? $data['categorias'] : [];
+    $estadoProyecto = isset($data['estado_proyecto']) ? $data['estado_proyecto'] : null;
+
     $dataAux = $objCategoria->buscarPresupuestoPorIDProyecto();
     $dataPresupuesto = array(); foreach($dataAux as $c ){ $dataPresupuesto[ $c['id_categoria'] ][] = $c['monto_presupuesto']; }
     $dataAux = $objCategoria->obtenerListaGastos();

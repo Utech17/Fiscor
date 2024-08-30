@@ -53,36 +53,51 @@ function cambiarFiltro(){
     let idproyecto = $('#filtroProyecto').val();
     let idcategoria = $('#filtroCategoria').val();
     let iditem = $('#filtroItem').val();
+
     // Filtrar por fecha
     let dataFiltro = filtroFecha();
-    if( !dataFiltro ) return;
-    // Filtrar proyecto y items
-    dataFiltro = dataFiltro.filter(item => ( ( idproyecto == 0 || item.ID_Proyecto == idproyecto ) && ( iditem == 0 || item.ID_Item == iditem ) ) );
-    const idItems = dataFiltro.map(item =>item.ID_Item );
-    const itemCategorias = listaItem.filter(item => idItems.includes(item.id_item) && (idcategoria == 0 || item.id_categoria == idcategoria)).map(item => item.id_item);
-    // Filtrar a items pertenecientes a categorias
-    if( idcategoria > 0 ){
-        dataFiltro = dataFiltro.filter(item => ( itemCategorias.includes(item.ID_Item) ) );
+    if (!dataFiltro) return;
+
+    // Filtrar por proyecto e ítems
+    dataFiltro = dataFiltro.filter(item => 
+        (idproyecto == 0 || item.ID_Proyecto == idproyecto) && 
+        (iditem == 0 || item.ID_Item == iditem)
+    );
+
+    // Obtener ítems pertenecientes a la categoría seleccionada
+    const idItems = dataFiltro.map(item => item.ID_Item);
+    const itemCategorias = listaItem.filter(item => 
+        idItems.includes(item.id_item) && 
+        (idcategoria == 0 || item.id_categoria == idcategoria)
+    ).map(item => item.id_item);
+
+    // Filtrar ítems que pertenecen a la categoría
+    if (idcategoria > 0) {
+        dataFiltro = dataFiltro.filter(item => itemCategorias.includes(item.ID_Item));
     }
-    // Presentar datos
+
+    // Presentar datos en la tabla
     let echo = '';
     $.each(dataFiltro, function(k, row){
-        row['proyecto'] = listaProyecto[ row['ID_Proyecto'] ] != undefined ? listaProyecto[ row['ID_Proyecto'] ] : '';
-        row['item'] = ''; $.each(listaItem, function(k2, c2){
-            if(c2['id_item'] == row['ID_Item']) row['item'] = c2['nombre'];
-        });
-        echo += `<tr>
-            <td>${ row['Fecha'] }</td>
-            <td>${ row['item'] }</td>
-            <td>${ row['Monto_Gasto'] }</td>
-            <td>${ row['proyecto'] }</td>
-            <td>
-                <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='${row['ID_Gasto']}'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-            </td>
-        </tr>`;
-    })
+        let proyectoNombre = listaProyecto[row.ID_Proyecto] || '';
+        let itemNombre = listaItem.find(c2 => c2.id_item == row.ID_Item)?.nombre || '';
+
+        echo += `
+            <tr>
+                <td>${row.Fecha}</td>
+                <td>${itemNombre}</td>
+                <td>${row.Monto_Gasto}</td>
+                <td>${proyectoNombre}</td>
+                <td>
+                    <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='${row.ID_Gasto}'>
+                        <img src='../vista/img/eliminar.png' alt='eliminar'>
+                    </a>
+                </td>
+            </tr>`;
+    });
+
     $('#tabla').DataTable().destroy();
-    $('#tablaDataGasto').html( echo )
+    $('#tablaDataGasto').html(echo);
     $('#tabla').DataTable({});
 }
 
@@ -90,23 +105,23 @@ function filtroFecha(){
     let fechaDesde = $('#filtroFechaD').val();
     let fechaHasta = $('#filtroFechaH').val();
 
-    // Verificar si fechaHasta es mayor que fechaDesde
-    if( fechaDesde != '' && fechaHasta != '' && new Date(fechaHasta) < new Date(fechaDesde)) {
+    // Verificar si la fecha hasta es mayor que la fecha desde
+    if (fechaDesde && fechaHasta && Date.parse(fechaHasta) < Date.parse(fechaDesde)) {
         alert('La fecha "Hasta" no puede ser menor que la fecha "Desde".');
-        $('#filtroFechaH').val(''); return false;
-    } else {
-        // Filtrar listaGasto según las fechas proporcionadas
-        let listaFiltrada = listaGasto.filter(gasto => {
-            let fechaGasto = new Date(gasto.Fecha);
-            // Verificar si cumple con la condición de fechaDesde
-            let cumpleDesde = fechaDesde ? fechaGasto >= new Date(fechaDesde) : true;
-            // Verificar si cumple con la condición de fechaHasta
-            let cumpleHasta = fechaHasta ? fechaGasto <= new Date(fechaHasta) : true;
-            // Retornar true si cumple con ambas condiciones
-            return cumpleDesde && cumpleHasta;
-        });
-        return listaFiltrada;
+        $('#filtroFechaH').val('');
+        return false;
     }
+
+    // Filtrar listaGasto según las fechas proporcionadas
+    let listaFiltrada = listaGasto.filter(gasto => {
+        let fechaGasto = Date.parse(gasto.Fecha);
+        let cumpleDesde = fechaDesde ? fechaGasto >= Date.parse(fechaDesde) : true;
+        let cumpleHasta = fechaHasta ? fechaGasto <= Date.parse(fechaHasta) : true;
+
+        return cumpleDesde && cumpleHasta;
+    });
+
+    return listaFiltrada;
 }
 
 function eliminarGasto(input) {

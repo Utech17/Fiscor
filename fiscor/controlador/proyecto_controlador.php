@@ -41,6 +41,39 @@ if (isset($_POST['Enviar'])) {
         $message = "Faltan datos para agregar la proyecto";
 }
 
+if (isset($_GET['finalizare'])) {
+    $idProyecto = intval($_GET['finalizare']);
+
+    // Establecer el ID del proyecto
+    $objProyecto->setID_Proyecto($idProyecto);
+
+    // Obtener el estado actual del proyecto
+    $proyectoActual = $objProyecto->buscarProyectoPorID($idProyecto);
+
+    if ($proyectoActual) {
+        // Verificar el estado actual del proyecto
+        $estadoActual = $proyectoActual['Estado'];
+
+        // Si el proyecto está finalizado, restaurarlo a "En Proceso"
+        if ($estadoActual == 2) {
+            $nuevoEstado = 1; // Restaurar a "En Proceso"
+        } else {
+            $nuevoEstado = 2; // Cambiar a "Finalizado"
+        }
+
+        // Llamar al método cambiarEstadoProyecto para actualizar el estado
+        if ($objProyecto->cambiarEstadoProyecto($nuevoEstado)) {
+            // Redirigir de vuelta a la página de proyectos si se actualiza correctamente
+            $message = "Estado actualizado correctamente.";
+        } else {
+            // Manejar errores si la actualización falla
+            $message = "Error al actualizar el estado del proyecto.";
+        }
+    } else {
+        $message = "Proyecto no encontrado.";
+    }
+}
+
 if (isset($_GET['eliminarId'])) {
     $idProyecto = $_GET['eliminarId'];
 

@@ -32,6 +32,13 @@ if (isset($_GET['Volver'])) {
         location.href='../index.php';
     </script>";
 }
+
+// Asegúrate de que $estadoProyecto está definida correctamente
+if (isset($estadoProyecto) && $estadoProyecto == 2) {
+    $ocultarBotones = true;
+} else {
+    $ocultarBotones = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -60,7 +67,9 @@ if (isset($_GET['Volver'])) {
     <div class="container">
         <div class="contenedor-categoria px-6 pt-5">
             <div id="tabla_div">
-                <a href="#" class="modal_abrir btn btn-primary" onClick="agregarCategoria();">Agregar Categoría</a>
+                <?php if (!$ocultarBotones): ?>
+                    <a href="#" class="modal_abrir btn btn-primary" onClick="agregarCategoria();">Agregar Categoría</a>
+                <?php endif; ?>
                 <div class="table-container">
                     <table id="tabla" class="table table-striped" style="width:100%">
                         <thead>
@@ -74,9 +83,13 @@ if (isset($_GET['Volver'])) {
                         </thead>
                         <tbody>
                         <?php
-                            if (isset($data) && is_array($data)) {
-                                foreach ($data as $row) {
+                            
+
+                            // Asegúrate de que $categorias está definida y contiene datos
+                            if (is_array($categorias) && !empty($categorias)) {
+                                foreach ($categorias as $row) {
                                     if (is_array($row)) {
+                                        // Inicializar los montos de presupuesto y gasto
                                         $row['monto_presupuesto'] = 0.00;
                                         if (isset($dataPresupuesto[$row['ID_Categoria']])) {
                                             $row['monto_presupuesto'] = array_sum($dataPresupuesto[$row['ID_Categoria']]);
@@ -85,22 +98,33 @@ if (isset($_GET['Volver'])) {
                                         if (isset($dataGasto[$row['ID_Categoria']])) {
                                             $row['monto_gastado'] = array_sum($dataGasto[$row['ID_Categoria']]);
                                         }
-                                        // Define el estilo para la celda basado en la comparación entre monto gastado y presupuesto
+
+                                        // Estilo de borde basado en monto gastado vs presupuesto
                                         $borderStyle = ($row['monto_gastado'] > $row['monto_presupuesto']) 
                                             ? 'border-bottom: 2px solid red; color: red;' 
                                             : 'border-bottom: 2px solid green; color: green;';
 
                                         echo "<tr>";
+                                        // Estado de la categoría
                                         $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
                                         echo "<td>" . htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') . "</td>";
                                         echo "<td>" . htmlspecialchars($row['Nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
                                         echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
                                         echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
+
+                                        // Botones siempre visibles
                                         echo "<td>
-                                                <a href='../controlador/item_controlador.php?idCategoria=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>
-                                                <a onClick='buscarCategoria(this)' class='btn-azul' data-id='" . $row['ID_Categoria'] . "' data-nombre='" . $row['Nombre'] . "' data-estado='" . $row['Estado'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
-                                                <a href='?eliminarId=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                            </td>";
+                                        <a href='../controlador/item_controlador.php?idCategoria=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-azul'><img src='../vista/img/ojo.png' alt='ojo'></a>";
+
+                                        // Verificar si los botones de editar y eliminar deben ocultarse
+                                        if (!$ocultarBotones) {
+                                            echo "<a onClick='buscarCategoria(this)' class='btn-azul' data-id='" . $row['ID_Categoria'] . "' data-nombre='" . $row['Nombre'] . "' data-estado='" . $row['Estado'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
+                                                <a href='?eliminarId=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>";
+                                        } else {
+                                            echo "<span class='text-muted'> Proyecto finalizado</span>";
+                                        }
+
+                                        echo "</td>";
                                         echo "</tr>";
                                     } else {
                                         echo "<tr><td colspan='3'>Dato incorrecto en la fila.</td></tr>";

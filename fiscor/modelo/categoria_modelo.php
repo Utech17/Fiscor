@@ -105,21 +105,30 @@
         }
 
         public function buscarCategoriaPorIDProyecto($ID_Proyecto) {
-            try {
-                $sql = "SELECT DISTINCT c.* 
-                        FROM categoria c 
-                        INNER JOIN item i ON c.ID_Categoria = i.id_categoria 
-                        INNER JOIN presupuesto p ON i.id_item = p.id_item 
-                        WHERE p.id_proyecto = :ID_Proyecto";
-                $stmt = $this->conexion->prepare($sql);
-                $stmt->bindParam(':ID_Proyecto', $ID_Proyecto, PDO::PARAM_INT);
-                $stmt->execute();
-                $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                return $categorias ? $categorias : array();
-            } catch (PDOException $e) {
-                error_log("Error al buscar categorías por ID de proyecto: " . $e->getMessage(), 0);
-                return array();
-            }
+            // Obtiene el estado del proyecto
+            $sqlEstado = "SELECT Estado 
+                          FROM proyecto 
+                          WHERE ID_Proyecto = :ID_Proyecto";
+            
+            $stmt = $this->conexion->prepare($sqlEstado);
+            $stmt->bindParam(':ID_Proyecto', $ID_Proyecto, PDO::PARAM_INT);
+            $stmt->execute();
+            $estadoProyecto = $stmt->fetchColumn();
+        
+            // Obtiene las categorías asociadas al proyecto
+            $sqlCategorias = "SELECT DISTINCT c.*
+                              FROM categoria c
+                              INNER JOIN item i ON c.ID_Categoria = i.id_categoria
+                              INNER JOIN presupuesto p ON i.id_item = p.id_item
+                              WHERE p.id_proyecto = :ID_Proyecto";
+            
+            $stmt = $this->conexion->prepare($sqlCategorias);
+            $stmt->bindParam(':ID_Proyecto', $ID_Proyecto, PDO::PARAM_INT);
+            $stmt->execute();
+            $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+            // Devuelve las categorías y el estado del proyecto
+            return array('categorias' => $categorias, 'estado_proyecto' => $estadoProyecto);
         }
 
         public function buscarPresupuestoPorIDProyecto() {

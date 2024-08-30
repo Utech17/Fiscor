@@ -143,18 +143,35 @@
 
 		public function buscarItemsConPresupuesto($idProyecto, $idCategoria) {
 			try {
-				$sql = "SELECT i.*, p.cantidad, p.monto_presupuesto 
-						FROM item i
-						JOIN presupuesto p ON i.id_item = p.id_item 
-						WHERE i.id_categoria = :idCategoria AND p.id_proyecto = :idProyecto";
-				$stmt = $this->conexion->prepare($sql);
-				$stmt->bindParam(':idCategoria', $idCategoria);
-				$stmt->bindParam(':idProyecto', $idProyecto);
+				// Consulta original para obtener los ítems con su presupuesto
+				$sqlItems = "SELECT i.*, p.cantidad, p.monto_presupuesto 
+							 FROM item i
+							 JOIN presupuesto p ON i.id_item = p.id_item 
+							 WHERE i.id_categoria = :idCategoria 
+							 AND p.id_proyecto = :idProyecto";
+							 
+				$stmt = $this->conexion->prepare($sqlItems);
+				$stmt->bindParam(':idCategoria', $idCategoria, PDO::PARAM_INT);
+				$stmt->bindParam(':idProyecto', $idProyecto, PDO::PARAM_INT);
 				$stmt->execute();
-				return $stmt->fetchAll(PDO::FETCH_ASSOC);
+				$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		
+				// Segunda consulta para obtener el estado del proyecto
+				$sqlEstado = "SELECT Estado 
+							  FROM proyecto 
+							  WHERE ID_Proyecto = :idProyecto";
+							  
+				$stmt = $this->conexion->prepare($sqlEstado);
+				$stmt->bindParam(':idProyecto', $idProyecto, PDO::PARAM_INT);
+				$stmt->execute();
+				$estadoProyecto = $stmt->fetchColumn();
+		
+				// Devuelve los ítems y el estado del proyecto
+				return array('items' => $items, 'estado_proyecto' => $estadoProyecto);
+		
 			} catch (PDOException $e) {
-				error_log("Error al buscar ítems con presupuesto por ID de proyecto y categoría: " . $e->getMessage(), 0);
-				return array();
+				error_log("Error al buscar ítems o estado del proyecto: " . $e->getMessage(), 0);
+				return array('items' => [], 'estado_proyecto' => null);
 			}
 		}
 

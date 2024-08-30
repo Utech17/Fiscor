@@ -142,7 +142,7 @@ class Gastos extends Conexion {
     }
 
     public function obtenerListaProyectos() {
-        $sql = "SELECT id_proyecto, nombre FROM proyecto";
+        $sql = "SELECT ID_Proyecto as id_proyecto,Nombre as nombre FROM proyecto";
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute();
         $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -155,7 +155,7 @@ class Gastos extends Conexion {
     }
 
     public function obtenerListaCategorias() {
-        $sql = "SELECT id_categoria, nombre FROM categoria";
+        $sql = "SELECT ID_Categoria as id_categoria, Nombre as nombre FROM categoria";
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

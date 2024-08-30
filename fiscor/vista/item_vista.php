@@ -60,9 +60,11 @@ if (isset($_GET['Volver'])) {
             <div id="tabla_div">
                 <div class="row">
                     <div class="col-sm-3">
-                        <a href="#" class="modal_abrir btn btn-primary" onClick="agregarItem();">Agregar Elemento</a>
+                        <?php if ($estadoProyecto != 2): ?>
+                            <a href="#" class="modal_abrir btn btn-primary" onClick="agregarItem();">Agregar Elemento</a>
+                        <?php endif; ?>
                     </div>
-                <div class="table-container">
+                    <div class="table-container">
                         <table id="tabla" class="table table-striped" style="width:100%">
                             <thead>
                                 <th>Estado</th>
@@ -74,31 +76,44 @@ if (isset($_GET['Volver'])) {
                             </thead>
                             <tbody>
                             <?php
-                                if (isset($data) && is_array($data)) {
-                                    foreach ($data as $row) {
-                                        $row['monto_gastado'] = 0.00;
-                                        if (isset($dataGasto[$row['id_item']])) {
-                                            $row['monto_gastado'] = array_sum($dataGasto[$row['id_item']]);
-                                        }
-                                        $borderStyle = $row['monto_gastado'] > $row['monto_presupuesto'] 
-                                            ? 'border-bottom: 2px solid red; color: red;' 
-                                            : 'border-bottom: 2px solid green; color: green;';
-                                        
-                                        echo "<tr>";
-                                        echo "<td>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</td>";
-                                        echo "<td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                        echo "<td>" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                        echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
-                                        echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
+                            // Obtiene el estado del proyecto
+                            $estadoProyecto = isset($estadoProyecto) ? $estadoProyecto : null;
+
+                            if (isset($items) && is_array($items)) {
+                                foreach ($items as $row) {
+                                    // Inicializa el monto gastado
+                                    $row['monto_gastado'] = 0.00;
+                                    if (isset($dataGasto[$row['id_item']])) {
+                                        $row['monto_gastado'] = array_sum($dataGasto[$row['id_item']]);
+                                    }
+
+                                    // Estilo de borde según monto gastado vs presupuesto
+                                    $borderStyle = $row['monto_gastado'] > $row['monto_presupuesto'] 
+                                        ? 'border-bottom: 2px solid red; color: red;' 
+                                        : 'border-bottom: 2px solid green; color: green;';
+                                    
+                                    echo "<tr>";
+                                    echo "<td>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                    echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
+                                    echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
+
+                                    // Verifica si el proyecto está finalizado para ocultar los botones
+                                    if ($estadoProyecto != 2) {
                                         echo "<td>
                                             <a onClick='buscarItem(this)' class='btn-azul' data-id='" . $row['id_item'] . "' data-nombre='" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "' data-estado='" . $row['estado'] . "' data-cantidad='" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "' data-presupuesto='" . number_format($row['monto_presupuesto'], 2) . "'><img src='../vista/img/editar.png' alt='editar'></a>
                                             <a onClick='eliminarItem(this)' class='btn-rojo' data-id2='" . $row['id_item'] . "&idProyecto=" . $idProyecto . "&idCategoria=" . $idCategoria . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
                                             </td>";
-                                        echo "</tr>";
+                                    } else {
+                                        echo "<td><span class='text-muted'>Proyecto finalizado</span></td>";
                                     }
-                                } else {
-                                    echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
+
+                                    echo "</tr>";
                                 }
+                            } else {
+                                echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
+                            }
                             ?>
                             </tbody>
                         </table>

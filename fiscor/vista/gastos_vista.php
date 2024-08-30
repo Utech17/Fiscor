@@ -68,11 +68,11 @@ if (isset($_GET['Volver'])) {
                 <div class="row">
                     <div class="col-sm-2">
                         <label>Fecha desde</label>
-                        <input type="date" class="form-control" id="filtroFechaD" onChange="cambiarFiltro()">
+                        <input type="date" class="form-control" id="filtroFechaD" max="<?php echo date('Y-m-d'); ?>" min="<?php echo date('Y-m-d', strtotime('-11 months')); ?>" onChange="cambiarFiltro()">
                     </div>
                     <div class="col-sm-2">
                         <label>Fecha hasta</label>
-                        <input type="date" class="form-control" id="filtroFechaH" onChange="cambiarFiltro()">
+                        <input type="date" class="form-control" id="filtroFechaH" max="<?php echo date('Y-m-d'); ?>" min="<?php echo date('Y-m-d', strtotime('-11 months')); ?>" onChange="cambiarFiltro()">
                     </div>
                     <div class="col-sm-2">
                         <label>Proyecto</label>
@@ -128,8 +128,7 @@ if (isset($_GET['Volver'])) {
                             echo "<td>" . number_format($row['Monto_Gasto'], 2, '.', ',') . "</td>"; // Formato decimal para Monto_Gasto
                             echo "<td>" . htmlspecialchars($proyecto) . "</td>";
                             echo "<td>
-                                    <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . htmlspecialchars($row['ID_Gasto']) . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                </td>";
+                                    <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . htmlspecialchars($row['ID_Gasto']) . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a></td>";
                             echo "</tr>";
                         }
                     } else {
@@ -178,7 +177,9 @@ if (isset($_GET['Volver'])) {
                 </div> 
                 <div class="form-group">
                     <label for="fecha">Fecha</label>
-                    <input type="date" id="fecha" name="fecha" class="form-control form-control-sm" required>
+                    <input type="date" id="fecha" name="fecha" class="form-control form-control-sm" required
+                        max="<?php echo date('Y-m-d'); ?>" 
+                        min="<?php echo date('Y-m-d', strtotime('-3 months')); ?>">
                 </div>
                 <div class="form-group">
                     <label for="montogasto">Monto</label>

@@ -151,4 +151,19 @@ class Proyecto {
             return array();
         }
     }
+
+    public function cambiarEstadoProyecto($nuevoEstado) {
+        try {
+            $sql = "UPDATE proyecto 
+                    SET Estado = :nuevoEstado 
+                    WHERE ID_Proyecto = :ID_Proyecto";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':nuevoEstado', $nuevoEstado, PDO::PARAM_INT);
+            $stmt->bindParam(':ID_Proyecto', $this->ID_Proyecto, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error al cambiar el estado del proyecto: " . $e->getMessage(), 0);
+            return false;
+        }
+    }
 }
