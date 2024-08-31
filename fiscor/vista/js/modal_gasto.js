@@ -11,6 +11,7 @@ function modalGastoForm(){
 function cerrarModal(){
     $('#modalGasto').removeClass('modal--show');
     $('#modalEliminar').removeClass('modal--show');
+    $('#gastoModal').removeClass('modal--show');
 }
 
 function cambiarFiltroProyecto( idproyecto ){
@@ -129,6 +130,30 @@ function eliminarGasto(input) {
     $('#modalEliminar').addClass('modal--show');
     $('#eliminarId').val(input.getAttribute('data-id'));
 }
+
+$(document).ready(function(){
+    // Evento doble clic en las filas de la tabla
+    $('table').on('dblclick', 'tr', function() {
+        // Obtener los datos del gasto de los atributos data
+        var fecha = $(this).data('fecha');
+        var item = $(this).data('item');
+        var monto = $(this).data('monto');
+        var proyecto = $(this).data('proyecto');
+        var comprobante = $(this).data('comprobante');
+        var observacion = $(this).data('observacion');
+
+        // Rellenar el modal con los datos del gasto
+        $('#gastoFecha').text(fecha);
+        $('#gastoItem').text(item);
+        $('#gastoMonto').text(monto);
+        $('#gastoProyecto').text(proyecto);
+        $('#gastoComprobante').text(comprobante);
+        $('#gastoObservacion').text(observacion);
+
+        // Mostrar el modal
+        $('#gastoModal').addClass('modal--show');
+    });
+});
 
 function seleccionarProyecto(idproyecto) {
     if (idproyecto == '' || idproyecto == 0) return;

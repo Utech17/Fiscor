@@ -76,44 +76,43 @@ if (isset($_GET['Volver'])) {
                             </thead>
                             <tbody>
                             <?php
-                            // Obtiene el estado del proyecto
-                            $estadoProyecto = isset($estadoProyecto) ? $estadoProyecto : null;
+                                $estadoProyecto = isset($estadoProyecto) ? $estadoProyecto : null;
 
-                            if (isset($items) && is_array($items)) {
-                                foreach ($items as $row) {
-                                    // Inicializa el monto gastado
-                                    $row['monto_gastado'] = 0.00;
-                                    if (isset($dataGasto[$row['id_item']])) {
-                                        $row['monto_gastado'] = array_sum($dataGasto[$row['id_item']]);
+                                if (isset($items) && is_array($items)) {
+                                    foreach ($items as $row) {
+                                        // Inicializa el monto gastado
+                                        $row['monto_gastado'] = 0.00;
+                                        if (isset($dataGasto[$row['id_item']])) {
+                                            $row['monto_gastado'] = array_sum($dataGasto[$row['id_item']]);
+                                        }
+
+                                        // Estilo de borde según monto gastado vs presupuesto
+                                        $borderStyle = $row['monto_gastado'] > $row['monto_presupuesto'] 
+                                            ? 'border-bottom: 2px solid red; color: red;' 
+                                            : 'border-bottom: 2px solid green; color: green;';
+                                        
+                                        echo "<tr>";
+                                        echo "<td>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                        echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
+                                        echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
+
+                                        // Verifica si el proyecto está finalizado para ocultar los botones
+                                        if ($estadoProyecto != 2) {
+                                            echo "<td>
+                                                <a onClick='buscarItem(this)' class='btn-azul' data-id='" . $row['id_item'] . "' data-nombre='" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "' data-estado='" . $row['estado'] . "' data-cantidad='" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "' data-presupuesto='" . number_format($row['monto_presupuesto'], 2) . "'><img src='../vista/img/editar.png' alt='editar'></a>
+                                                <a onClick='eliminarItem(this)' class='btn-rojo' data-id2='" . $row['id_item'] . "&idProyecto=" . $idProyecto . "&idCategoria=" . $idCategoria . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
+                                                </td>";
+                                        } else {
+                                            echo "<td><span class='text-muted'>Proyecto finalizado</span></td>";
+                                        }
+
+                                        echo "</tr>";
                                     }
-
-                                    // Estilo de borde según monto gastado vs presupuesto
-                                    $borderStyle = $row['monto_gastado'] > $row['monto_presupuesto'] 
-                                        ? 'border-bottom: 2px solid red; color: red;' 
-                                        : 'border-bottom: 2px solid green; color: green;';
-                                    
-                                    echo "<tr>";
-                                    echo "<td>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "</td>";
-                                    echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
-                                    echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
-
-                                    // Verifica si el proyecto está finalizado para ocultar los botones
-                                    if ($estadoProyecto != 2) {
-                                        echo "<td>
-                                            <a onClick='buscarItem(this)' class='btn-azul' data-id='" . $row['id_item'] . "' data-nombre='" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "' data-estado='" . $row['estado'] . "' data-cantidad='" . htmlspecialchars($row['cantidad'], ENT_QUOTES, 'UTF-8') . "' data-presupuesto='" . number_format($row['monto_presupuesto'], 2) . "'><img src='../vista/img/editar.png' alt='editar'></a>
-                                            <a onClick='eliminarItem(this)' class='btn-rojo' data-id2='" . $row['id_item'] . "&idProyecto=" . $idProyecto . "&idCategoria=" . $idCategoria . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a>
-                                            </td>";
-                                    } else {
-                                        echo "<td><span class='text-muted'>Proyecto finalizado</span></td>";
-                                    }
-
-                                    echo "</tr>";
+                                } else {
+                                    echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
                                 }
-                            } else {
-                                echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
-                            }
                             ?>
                             </tbody>
                         </table>

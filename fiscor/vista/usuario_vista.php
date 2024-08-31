@@ -57,67 +57,73 @@ if (isset($_GET['Volver'])) {
         <div class="contenedor-usuario px-6 pt-5">
             <div id="tabla_div" class="table-responsive">
                 <?php if ($idRol == 1): ?>
-                    <a href="#" class="modal_abrir btn btn-primary" onClick="agregarUsuario();">Agregar Usuario</a>
-                    <div class="table-container">    
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <a href="#" class="modal_abrir btn btn-primary" onClick="agregarUsuario();">Agregar Usuario</a>
+                        </div>
+                        <div class="table-container">    
+                            <table id="tabla" class="table table-striped" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Rol</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($usuarios as $usuario): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                            <td><?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                            <td><?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                            <td><?php
+                                                if ($usuario['ID_Rol'] == 0) {
+                                                    echo "Usuario";
+                                                } elseif ($usuario['ID_Rol'] == 1) {
+                                                    echo "Administrador";
+                                                } else {
+                                                    echo "Rol Desconocido";
+                                                }
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <a onClick="editarUsuario(this)" class="btn-azul" data-id="<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-usuario="<?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-nombre="<?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?>" data-apellido="<?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?>" data-rol="<?php echo htmlspecialchars($usuario['ID_Rol'], ENT_QUOTES, 'UTF-8'); ?>"><img src="../vista/img/editar.png" alt="editar"></a>
+                                                <a href="?eliminarId=<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" class="btn-rojo" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?');"><img src="../vista/img/eliminar.png" alt="eliminar"></a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <?php else: ?>
+                <div class="row">
+                    <div class="table-container">
                         <table id="tabla" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Usuario</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Rol</th>
-                                    <th>Acciones</th>
+                                    <th>Campo</th>
+                                    <th>Valor</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($usuarios as $usuario): ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                        <td><?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                        <td><?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                        <td><?php
-                                            if ($usuario['ID_Rol'] == 0) {
-                                                echo "Usuario";
-                                            } elseif ($usuario['ID_Rol'] == 1) {
-                                                echo "Administrador";
-                                            } else {
-                                                echo "Rol Desconocido";
-                                            }
-                                            ?>
-                                        </td>
-                                        <td>
-                                            <a onClick="editarUsuario(this)" class="btn-azul" data-id="<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-usuario="<?php echo htmlspecialchars($usuario['Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-nombre="<?php echo htmlspecialchars($usuario['Nombre'], ENT_QUOTES, 'UTF-8'); ?>" data-apellido="<?php echo htmlspecialchars($usuario['Apellido'], ENT_QUOTES, 'UTF-8'); ?>" data-rol="<?php echo htmlspecialchars($usuario['ID_Rol'], ENT_QUOTES, 'UTF-8'); ?>"><img src="../vista/img/editar.png" alt="editar"></a>
-                                            <a href="?eliminarId=<?php echo htmlspecialchars($usuario['ID_Usuario'], ENT_QUOTES, 'UTF-8'); ?>" class="btn-rojo" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?');"><img src="../vista/img/eliminar.png" alt="eliminar"></a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
+                                <tr>
+                                    <td><strong>Usuario</strong></td>
+                                    <td><?php echo htmlspecialchars($usuario, ENT_QUOTES, 'UTF-8'); ?></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nombre</strong></td>
+                                    <td><?php echo htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8'); ?></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Apellido</strong></td>
+                                    <td><?php echo htmlspecialchars($apellido, ENT_QUOTES, 'UTF-8'); ?></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                <?php else: ?>
-                <div class="table-container">
-                    <table id="tabla" class="table table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Campo</th>
-                                <th>Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Usuario</strong></td>
-                                <td><?php echo htmlspecialchars($usuario, ENT_QUOTES, 'UTF-8'); ?></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Nombre</strong></td>
-                                <td><?php echo htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8'); ?></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Apellido</strong></td>
-                                <td><?php echo htmlspecialchars($apellido, ENT_QUOTES, 'UTF-8'); ?></td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
                 <?php endif; ?>
             </div>

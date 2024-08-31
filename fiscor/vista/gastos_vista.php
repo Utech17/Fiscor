@@ -110,30 +110,30 @@ if (isset($_GET['Volver'])) {
                     </thead>
                     <tbody id="tablaDataGasto">
                     <?php
-                    if (isset($data) && is_array($data)) {
-                        foreach ($data as $row) {
-                            // Obtener el nombre del proyecto y el ítem
-                            $proyecto = isset($lista_proyectos[$row['ID_Proyecto']]) ? $lista_proyectos[$row['ID_Proyecto']] : '';
-                            $item = ''; 
-                            foreach ($lista_items as $c) {
-                                if ($c['id_item'] == $row['ID_Item']) {
-                                    $item = $c['nombre'];
-                                    break; // Salir del bucle una vez que encontramos el ítem
+                        if (isset($data) && is_array($data)) {
+                            foreach ($data as $row) {
+                                // Obtener el nombre del proyecto y el ítem
+                                $proyecto = isset($lista_proyectos[$row['ID_Proyecto']]) ? $lista_proyectos[$row['ID_Proyecto']] : '';
+                                $item = ''; 
+                                foreach ($lista_items as $c) {
+                                    if ($c['id_item'] == $row['ID_Item']) {
+                                        $item = $c['nombre'];
+                                        break; // Salir del bucle una vez que encontramos el ítem
+                                    }
                                 }
+                        
+                                echo "<tr data-id='" . htmlspecialchars($row['ID_Gasto']) . "' data-fecha='" . htmlspecialchars($row['Fecha']) . "' data-item='" . htmlspecialchars($item) . "' data-monto='" . number_format($row['Monto_Gasto'], 2, '.', ',') . "' data-proyecto='" . htmlspecialchars($proyecto) . "' data-comprobante='" . htmlspecialchars($row['Comprobante']) . "' data-observacion='" . htmlspecialchars($row['Observacion']) . "'>";
+                                echo "<td>" . htmlspecialchars($row['Fecha']) . "</td>";
+                                echo "<td>" . htmlspecialchars($item) . "</td>";
+                                echo "<td>" . number_format($row['Monto_Gasto'], 2, '.', ',') . "</td>"; // Formato decimal para Monto_Gasto
+                                echo "<td>" . htmlspecialchars($proyecto) . "</td>";
+                                echo "<td>
+                                        <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . htmlspecialchars($row['ID_Gasto']) . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a></td>";
+                                echo "</tr>";
                             }
-
-                            echo "<tr>";
-                            echo "<td>" . htmlspecialchars($row['Fecha']) . "</td>";
-                            echo "<td>" . htmlspecialchars($item) . "</td>";
-                            echo "<td>" . number_format($row['Monto_Gasto'], 2, '.', ',') . "</td>"; // Formato decimal para Monto_Gasto
-                            echo "<td>" . htmlspecialchars($proyecto) . "</td>";
-                            echo "<td>
-                                    <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . htmlspecialchars($row['ID_Gasto']) . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a></td>";
-                            echo "</tr>";
+                        } else {
+                            echo "<tr><td colspan='5'>No hay datos disponibles.</td></tr>";
                         }
-                    } else {
-                        echo "<tr><td colspan='5'>No hay datos disponibles.</td></tr>";
-                    }
                     ?>
                     </tbody>
                     <tfoot>
@@ -145,6 +145,7 @@ if (isset($_GET['Volver'])) {
         </div>
     </div>
 
+    <!-- Modales -->
     <section id="modalGasto" class="modal_section modalGasto">
         <div class="modal__contenedor">
             <form id="gastoForm" action="" method="POST">
@@ -213,6 +214,27 @@ if (isset($_GET['Volver'])) {
                     <input id="buttonEliminar" type="submit" name="Confirmar" class="btn btn-primary">
                 </div>
             </form>
+        </div>
+    </section>
+
+    <section class="modal_section modalGasto" id="gastoModal" tabindex="-1" role="dialog" aria-labelledby="gastoModalLabel" aria-hidden="true">
+        <div class="modal__contenedor">
+            <center>
+                <div class="card-header">
+                    <h5 class="modal-title" id="gastoModalLabel">Detalles del Gasto</h5>
+                </div>
+            </center>
+            <div class="modal-body">
+                <p><strong>Fecha:</strong> <span id="gastoFecha"></span></p>
+                <p><strong>Item:</strong> <span id="gastoItem"></span></p>
+                <p><strong>Monto:</strong> <span id="gastoMonto"></span></p>
+                <p><strong>Proyecto:</strong> <span id="gastoProyecto"></span></p>
+                <p><strong>Comprobante:</strong> <span id="gastoComprobante"></span></p>
+                <p><strong>Observación:</strong> <span id="gastoObservacion"></span></p>
+            </div>
+            <div class="modal__botones-contenedor" >
+                <input type="button" value="Cerrar" class="btn btn-secondary" onClick="cerrarModal()">
+            </div>
         </div>
     </section>
     <?php if (isset($m)):
