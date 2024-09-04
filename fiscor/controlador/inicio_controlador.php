@@ -8,20 +8,6 @@
     $proyectoModelo = new Proyecto();
     $Gastos = new Gastos();
 
-    // Si no es una solicitud AJAX, cargar los datos iniciales
-    $datosPresupuesto = $presupuestoModelo->consultar(); 
-
-    // Formatear los datos para Chart.js
-    $datosFormateados = array();
-    foreach ($datosPresupuesto as $dato) {
-        $datosFormateados[] = array(
-            'proyecto' => $dato['Nombre'], 
-            'presupuesto' => $dato['total_presupuesto']
-        );
-    }
-    // Enviar los datos en formato JSON para uso en frontend
-    $datosJSON = json_encode($datosFormateados);
-
     $proyectos = $proyectoModelo->buscarTodos();
     // Verificar si la solicitud se realiza vía AJAX
     if (isset($_GET['id_proyecto'])) {

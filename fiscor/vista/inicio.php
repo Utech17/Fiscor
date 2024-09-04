@@ -72,15 +72,6 @@ if (isset($_GET['Volver'])) {
         </div>
 
         <div class="contenedor-canvas px-6 pt-5">
-            <div class="text-center">
-                <center><h2 class="mb-4">Presupuestos de Proyectos</h2></center>
-            </div>
-            <div class="d-flex justify-content-center">
-                <canvas id="myDoughnutChart" width="50" height="50"></canvas>
-            </div>
-        </div>
-        <br>
-        <div class="contenedor-canvas px-6 pt-5">
             <center><form method="GET" id="formulario-proyecto" class="text-center mb-4">
                 <label for="proyecto" class="form-label"><h2>Presupuesto por categorías del Proyecto: </h2></label>
                 <select name="id_proyecto" id="proyecto" class="form-select w-auto d-inline-block">
@@ -97,104 +88,7 @@ if (isset($_GET['Volver'])) {
             </div>
         </div>
     </div>
-    <br><br><br>
 
-    <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Pasar el JSON desde PHP a una variable JavaScript
-                const datosFormateados = <?php echo $datosJSON; ?>;
-
-                // Procesar los datos para Chart.js
-                const labels = datosFormateados.map(item => `${item.proyecto}`);
-                const dataSet = datosFormateados.map(item => item.presupuesto);
-
-                var ctx = document.getElementById('myDoughnutChart').getContext('2d');
-                var myDoughnutChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Presupuesto del Proyecto',
-                            data: dataSet,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)',
-                                'rgba(199, 199, 199, 0.2)',
-                                'rgba(83, 102, 255, 0.2)',
-                                'rgba(255, 159, 192, 0.2)',
-                                'rgba(64, 159, 255, 0.2)',
-                                'rgba(192, 255, 99, 0.2)',
-                                'rgba(255, 64, 159, 0.2)',
-                                'rgba(102, 255, 102, 0.2)',
-                                'rgba(255, 206, 132, 0.2)',
-                                'rgba(159, 64, 255, 0.2)',
-                                'rgba(86, 255, 206, 0.2)',
-                                'rgba(99, 255, 132, 0.2)',
-                                'rgba(192, 75, 75, 0.2)',
-                                'rgba(132, 206, 255, 0.2)',
-                                'rgba(235, 54, 162, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)',
-                                'rgba(199, 199, 199, 1)',
-                                'rgba(83, 102, 255, 1)',
-                                'rgba(255, 159, 192, 1)',
-                                'rgba(64, 159, 255, 1)',
-                                'rgba(192, 255, 99, 1)',
-                                'rgba(255, 64, 159, 1)',
-                                'rgba(102, 255, 102, 1)',
-                                'rgba(255, 206, 132, 1)',
-                                'rgba(159, 64, 255, 1)',
-                                'rgba(86, 255, 206, 1)',
-                                'rgba(99, 255, 132, 1)',
-                                'rgba(192, 75, 75, 1)',
-                                'rgba(132, 206, 255, 1)',
-                                'rgba(235, 54, 162, 1)'
-                            ],
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        aspectRatio: 4,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        var dataset = tooltipItem.dataset;
-                                        var total = dataset.data.reduce((acc, value) => acc + value, 0);
-                                        var value = dataset.data[tooltipItem.dataIndex];
-                                        var percentage = ((value / total) * 100).toFixed(2);
-                                        return `${dataset.label}: ${value} (${percentage}%)`;
-                                    }
-                                }
-                            }
-                        },
-                        layout: {
-                            padding: {
-                                left: 0,
-                                right: 0,
-                                top: 0,
-                                bottom: 0
-                            }
-
-                        }
-                    }
-                });
-            });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var ctx = document.getElementById('myPolarAreaChart').getContext('2d');

@@ -98,7 +98,7 @@ if (isset($_GET['Volver'])) {
                     <br>
                 </div>
                 <br>
-                <table id="tabla" class="table table-striped" style="width:100%">
+                <table id="tabla" class="table table-bordered table-responsive" style="width:100%">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -127,7 +127,7 @@ if (isset($_GET['Volver'])) {
                                 echo "<td>" . htmlspecialchars($item) . "</td>";
                                 echo "<td>" . number_format($row['Monto_Gasto'], 2, '.', ',') . "</td>"; // Formato decimal para Monto_Gasto
                                 echo "<td>" . htmlspecialchars($proyecto) . "</td>";
-                                echo "<td>
+                                echo "<td class='d-flex justify-content-between' style='width: 20%'>
                                         <a onClick='eliminarGasto(this)' class='btn-rojo' data-id='" . htmlspecialchars($row['ID_Gasto']) . "'><img src='../vista/img/eliminar.png' alt='eliminar'></a></td>";
                                 echo "</tr>";
                             }

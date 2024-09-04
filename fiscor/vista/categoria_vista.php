@@ -74,7 +74,7 @@ if (isset($estadoProyecto) && $estadoProyecto == 2) {
                         <?php endif; ?>
                     </div>
                     <div class="table-container">
-                        <table id="tabla" class="table table-striped" style="width:100%">
+                        <table id="tabla" class="table table-bordered table-responsive" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Estado</th>

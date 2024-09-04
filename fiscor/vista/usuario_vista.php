@@ -62,7 +62,7 @@ if (isset($_GET['Volver'])) {
                             <a href="#" class="modal_abrir btn btn-primary" onClick="agregarUsuario();">Agregar Usuario</a>
                         </div>
                         <div class="table-container">    
-                            <table id="tabla" class="table table-striped" style="width:100%">
+                            <table id="tabla" class="table table-bordered table-responsive" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Usuario</th>
@@ -101,7 +101,7 @@ if (isset($_GET['Volver'])) {
                 <?php else: ?>
                 <div class="row">
                     <div class="table-container">
-                        <table id="tabla" class="table table-striped" style="width:100%">
+                        <table id="tabla" class="table table-bordered table-responsive" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Campo</th>

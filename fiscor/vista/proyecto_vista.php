@@ -62,7 +62,7 @@ if (isset($_GET['Volver'])) {
                         <a href="#" class="modal_abrir btn btn-primary" onClick="agregarProyecto();">Agregar Proyecto</a>
                     </div>
                     <div class="table-container">
-                        <table id="tabla" class="table table-striped" style="width:100%">
+                        <table id="tabla" class="table table-bordered table-responsive" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Estado</th>
@@ -74,47 +74,56 @@ if (isset($_GET['Volver'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                    if (isset($data) && is_array($data)) {
-                                        foreach ($data as $row) {
-                                            $row['monto_presupuesto'] = 0.00;
-                                            if (isset($dataPresupuesto[$row['ID_Proyecto']])) {
-                                                $row['monto_presupuesto'] = array_sum($dataPresupuesto[$row['ID_Proyecto']]);
-                                            }
-                                            $row['monto_gastado'] = 0.00;
-                                            if (isset($dataGasto[$row['ID_Proyecto']])) {
-                                                $row['monto_gastado'] = array_sum($dataGasto[$row['ID_Proyecto']]);
-                                            }
+                            <?php
+                                if (isset($data) && is_array($data)) {
+                                    foreach ($data as $row) {
+                                    $row['monto_presupuesto'] = 0.00;
+                                    if (isset($dataPresupuesto[$row['ID_Proyecto']])) {
+                                        $row['monto_presupuesto'] = array_sum($dataPresupuesto[$row['ID_Proyecto']]);
+                                    }
+                                    $row['monto_gastado'] = 0.00;
+                                    if (isset($dataGasto[$row['ID_Proyecto']])) {
+                                        $row['monto_gastado'] = array_sum($dataGasto[$row['ID_Proyecto']]);
+                                    }
 
-                                            // Determinar el estilo de borde y color del texto
-                                            $borderStyle = $row['monto_gastado'] > $row['monto_presupuesto'] 
-                                                ? 'border-bottom: 2px solid red; color: red;' 
-                                                : 'border-bottom: 2px solid green; color: green;';
-                                            
-                                            // Estilo en línea para la descripción
-                                            $descripcionStyle = 'max-width: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+                                    $borderStyle = $row['monto_gastado'] > $row['monto_presupuesto'] 
+                                        ? 'border-bottom: 2px solid red; color: red;' 
+                                        : 'border-bottom: 2px solid green; color: green;';
+                                    
+                                    $descripcionStyle = 'max-width: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
 
-                                            echo "<tr>";
-                                            $estado = ($row['Estado'] == 0) ? 'Inactivo' : (($row['Estado'] == 1) ? 'En Proceso' : 'Finalizado');
-                                            echo "<td>" . $estado . "</td>";
-                                            echo "<td>" . $row['Nombre'] . "</td>";
-                                            echo "<td style='$descripcionStyle'>" . $row['Descripcion'] . "</td>";
-                                            echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
-                                            echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
-                                            echo "<td class='d-flex justify-content-between'>"; 
-                                            echo "<a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul me-1'><img src='../vista/img/ojo.png' alt='ojo'></a>";
-                                            echo "<a onClick='buscarProyecto(this)' class='btn-azul me-1' data-id='" . $row['ID_Proyecto'] . "' data-estado='" . $row['Estado'] . "' data-nombre='" . $row['Nombre'] . "' data-descripcion='" . $row['Descripcion'] . "'><img src='../vista/img/editar.png' alt='editar'></a>";
-                                            if ($idRol == 1) {
-                                                echo "<a href='?finalizare=" . $row['ID_Proyecto'] . "' class='btn-verde me-1'><img src='../vista/img/finalizar.png' alt='finalizar'></a>";
-                                            }
-                                            echo "<a href='?eliminarId=" . $row['ID_Proyecto'] . "' class='btn-rojo me-1'><img src='../vista/img/eliminar.png' alt='eliminar'></a>";
-                                            echo "</td>";
-                                            echo "</tr>";
+                                    echo "<tr>";
+                                    $estado = ($row['Estado'] == 0) ? 'Inactivo' : (($row['Estado'] == 1) ? 'En Proceso' : 'Finalizado');
+                                    echo "<td>" . $estado . "</td>";
+                                    echo "<td>" . $row['Nombre'] . "</td>";
+                                    echo "<td style='$descripcionStyle'>" . $row['Descripcion'] . "</td>";
+                                    echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
+                                    echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
+                                    echo "<td class='d-flex justify-content-between' style='width: 20%'>";
+                                    if ($row['Estado'] == 2) {
+                                        echo "<a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul me-1'><img src='../vista/img/ojo.png' alt='ojo'></a>";
+                                        if ($idRol == 1) {
+                                            echo "<a href='?finalizare=" . $row['ID_Proyecto'] . "' class='btn-verde me-1'><img src='../vista/img/finalizar.png' alt='finalizar'></a>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
+                                        if ($idRol == 1) {
+                                            echo "<a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul me-1'><img src='../vista/img/ojo.png' alt='ojo'></a>";
+                                            echo "<a onClick='buscarProyecto(this)' class='btn-azul me-1' data-id='" . $row['ID_Proyecto'] . "' data-estado='" . $row['Estado'] . "' data-nombre='" . $row['Nombre'] . "' data-descripcion='" . $row['Descripcion'] . "'><img src='../vista/img/editar.png' alt='editar'></a>";
+                                            echo "<a href='?eliminarId=" . $row['ID_Proyecto'] . "' class='btn-rojo me-1'><img src='../vista/img/eliminar.png' alt='eliminar'></a>";
+                                            echo "<a href='?finalizare=" . $row['ID_Proyecto'] . "' class='btn-verde me-1'><img src='../vista/img/finalizar.png' alt='finalizar'></a>";
+                                        } else {
+                                            echo "<a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul me-1'><img src='../vista/img/ojo.png' alt='ojo'></a>";
+                                            echo "<a onClick='buscarProyecto(this)' class='btn-azul me-1' data-id='" . $row['ID_Proyecto'] . "' data-estado='" . $row['Estado'] . "' data-nombre='" . $row['Nombre'] . "' data-descripcion='" . $row['Descripcion'] . "'><img src='../vista/img/editar.png' alt='editar'></a>";
+                                            echo "<a href='?eliminarId=" . $row['ID_Proyecto'] . "' class='btn-rojo me-1'><img src='../vista/img/eliminar.png' alt='eliminar'></a>";
+                                        }
                                     }
-                                ?>
+                                    echo "</td>";
+                                    echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='6'>No hay datos disponibles.</td></tr>";
+                                }
+                            ?>
                             </tbody>
                             <tfoot>
                                 <tr>

@@ -65,7 +65,7 @@ if (isset($_GET['Volver'])) {
                         <?php endif; ?>
                     </div>
                     <div class="table-container">
-                        <table id="tabla" class="table table-striped" style="width:100%">
+                        <table id="tabla" class="table table-bordered table-responsive" style="width:100%">
                             <thead>
                                 <th>Estado</th>
                                 <th>Elemento</th>

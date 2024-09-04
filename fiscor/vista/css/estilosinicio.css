@@ -4,6 +4,25 @@ body {
     background-color: #f5f5f5;
 }
 
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.column-small {
+    width: 10%;
+}
+
+.column-medium {
+    width: 20%;
+}
+
 /* Estructura principal */
 .contenedor {
     display: flex;
