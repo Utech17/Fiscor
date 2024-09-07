@@ -86,7 +86,7 @@ if (isset($estadoProyecto) && $estadoProyecto == 2) {
                             </thead>
                             <tbody>
                             <?php
-                                if (is_array($categorias) && !empty($categorias)) {
+                                if (is_array($categorias) && is_array($categorias)) {
                                     foreach ($categorias as $row) {
                                         if (is_array($row)) {
                                             // Inicializar los montos de presupuesto y gasto
@@ -104,22 +104,22 @@ if (isset($estadoProyecto) && $estadoProyecto == 2) {
                                                 ? 'border-bottom: 2px solid red; color: red;' 
                                                 : 'border-bottom: 2px solid green; color: green;';
 
-                                            echo "<tr>";
-                                            // Estado de la categoría
                                             $estado = ($row['Estado'] == 1) ? 'Activo' : 'Inactivo';
+
+                                            echo "<tr>";
                                             echo "<td>" . htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') . "</td>";
                                             echo "<td>" . htmlspecialchars($row['Nombre'], ENT_QUOTES, 'UTF-8') . "</td>";
                                             echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
                                             echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
                                             echo "<td class='d-flex justify-content'>
-                                            <a href='../controlador/item_controlador.php?idCategoria=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-azul me-2'><img src='../vista/img/ojo.png' alt='ojo'></a>";
-                                            // Verificar si los botones de editar y eliminar deben ocultarse
-                                            if (!$ocultarBotones) {
-                                                echo " <a onClick='buscarCategoria(this)' class='btn-azul me-2' data-id='" . $row['ID_Categoria'] . "' data-nombre='" . $row['Nombre'] . "' data-estado='" . $row['Estado'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
-                                                    <a href='?eliminarId=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>";
-                                            } else {
-                                                echo "<span class='text-muted'> Proyecto finalizado</span>";
-                                            }
+                                                <a href='../controlador/item_controlador.php?idCategoria=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-azul me-2'><img src='../vista/img/ojo.png' alt='ojo'></a>";
+                                                // Verificar si los botones de editar y eliminar deben ocultarse
+                                                if (!$ocultarBotones) {
+                                                    echo " <a onClick='buscarCategoria(this)' class='btn-azul me-2' data-id='" . $row['ID_Categoria'] . "' data-nombre='" . $row['Nombre'] . "' data-estado='" . $row['Estado'] . "'><img src='../vista/img/editar.png' alt='editar'></a>
+                                                        <a href='?eliminarId=" . $row['ID_Categoria'] . "&idProyecto=" . $idProyecto . "' class='btn-rojo'><img src='../vista/img/eliminar.png' alt='eliminar'></a>";
+                                                } else {
+                                                    echo "<span class='text-muted'> Proyecto finalizado</span>";
+                                                }
                                             echo "</td>";
                                             echo "</tr>";
                                         } else {

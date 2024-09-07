@@ -136,7 +136,7 @@ if (isset($_GET['Volver'])) {
                         <label for="seleccionarItem">Seleccionar Elemento</label>
                         <select id="seleccionarItem" class="form-control" name="id_item" onchange="mostrarCamposPresupuesto()">
                             <option value="">-- Seleccionar --</option>
-                            <?php foreach ($items as $item): ?>
+                            <?php foreach ($itemsSimples as $item): ?>
                                 <option value="<?php echo $item['id_item']; ?>">
                                     <?php echo htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8'); ?>
                                 </option>

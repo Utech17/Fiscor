@@ -99,7 +99,7 @@ if (isset($_GET['Volver'])) {
                                     echo "<td style='$descripcionStyle'>" . $row['Descripcion'] . "</td>";
                                     echo "<td>" . number_format($row['monto_presupuesto'], 2) . "</td>";
                                     echo "<td style='$borderStyle'>" . number_format($row['monto_gastado'], 2) . "</td>";
-                                    echo "<td class='d-flex justify-content-between' style='width: 20%'>";
+                                    echo "<td class='d-flex justify-content-between' style='width: 100%'>";
                                     if ($row['Estado'] == 2) {
                                         echo "<a href='../controlador/categoria_controlador.php?idProyecto=" . $row['ID_Proyecto'] . "' class='btn-azul me-1'><img src='../vista/img/ojo.png' alt='ojo'></a>";
                                         if ($idRol == 1) {
@@ -148,7 +148,6 @@ if (isset($_GET['Volver'])) {
                     <label for="Estado">Estado</label>
                     <select class="form-control" id="estado" name="estado">
                         <option value="1" selected>Activo</option>
-                        <option value="0">Inactivo</option>
                     </select>
                 </div>
                 <div class="form-group">
