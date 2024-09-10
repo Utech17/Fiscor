@@ -29,9 +29,7 @@ if (isset($_GET['Volver'])) {
     <script src="https://kit.fontawesome.com/68b92f41c0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="../vista/css/estilosinicio.css">
     <link rel="stylesheet" type="text/css" href="../vista/css/estiloreporte.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.js"></script>
     
     <title>Gastos</title>
     <link rel="website icon" type="png" href="../vista/img/logo2.png">
@@ -50,12 +48,13 @@ if (isset($_GET['Volver'])) {
     <div class="container">
         <div class="contenedor-categoria px-6 pt-5">
             <h1 class="titulo"><b>Selecciona el reporte que deseas consultar</b></h1>
+
             <form method="post" target="_blank">
                 <select id="imprimirReporte" name="imprimirReporte" class="select-menu" >
-                    <option value="proyectos">Proyectos</option>
-                    <option value="categorias">Categorías</option>
-                    <option value="elementos">Elementos</option>
-                    <option value="gsatos">Gastos</option>
+                    <option value="proyectogeneral">Individual</option>
+                    <option value="categorias">Terminados</option>
+                    <option value="elementos">Superados de Presupuesto</option>
+                    <option value="gastos">Gastos</option>
                     <option value="usuarios">Usuarios</option>
                 </select>
                 <button type="submit" class="boton-impresion">
@@ -66,8 +65,8 @@ if (isset($_GET['Volver'])) {
             if(isset($_POST['imprimirReporte'])) {
             $seleccion = $_POST['imprimirReporte'];
             switch($seleccion) {
-            case "productos":
-                header("Location: ../fpdf/productos.php");
+            case "proyectogeneral":
+                header("Location: ../fpdf/proyectogeneral.php");
                 exit();
             case "entradas":
                 header("Location: ../fpdf/entradas.php");
@@ -78,8 +77,8 @@ if (isset($_GET['Volver'])) {
             case "proveedores":
                 header("Location: ../fpdf/proveedores.php");
                 exit();
-            case "clientes":
-                header("Location: ../fpdf/clientes.php");
+            case "gastos":
+                header("Location: ../fpdf/gastos.php");
                 exit();
             case "entrada-salidas":
                 header("Location: ../fpdf/reporte_alumno2.php");

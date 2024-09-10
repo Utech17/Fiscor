@@ -5,8 +5,7 @@ require_once("../modelo/reporte_modelo.php");
 // Crear instancia del objeto ReportesModelo
 $objReporte = new Reportes();
 $idRol = isset($_SESSION['ID_Rol']) ? $_SESSION['ID_Rol'] : 0;
-
-// Lógica para obtener los datos necesarios del modelo
+$lista_proyectos = $objReporte->obtenerListaProyectos();
 
 // Llamar controlador con funciones de diseño, para no repetir el mismo código
 require_once("../controlador/vista_controlador.php");
