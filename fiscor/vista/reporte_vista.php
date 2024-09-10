@@ -48,8 +48,9 @@ if (isset($_GET['Volver'])) {
     <div class="container">
         <div class="contenedor-categoria px-6 pt-5">
             <h1 class="titulo"><b>Selecciona el reporte que deseas consultar</b></h1>
-            <form method="post" action="" target="_blank">
+            <form id="reportForm" method="post" action="" target="_blank">
                 <select name="id_proyecto" id="proyecto" class="form-select w-auto d-inline-block">
+                    <option value="todos">-- Todos --</option>
                     <?php foreach ($proyectos as $proyecto): ?>
                         <option value="<?php echo $proyecto['ID_Proyecto']; ?>">
                             <?php echo $proyecto['Nombre']; ?>
@@ -65,6 +66,19 @@ if (isset($_GET['Volver'])) {
             </div>
         </div>
     </div><br><br>
+
+    <script>
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        var proyectoSelect = document.getElementById('proyecto');
+        var selectedValue = proyectoSelect.value;
+
+        if (selectedValue === 'todos') {
+            // Evitar el envío del formulario si es "Todos"
+            e.preventDefault();
+            window.open('../fpdf/proyectogeneral.php', '_blank');
+        }
+    });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
