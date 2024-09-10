@@ -29,9 +29,7 @@ if (isset($_GET['Volver'])) {
     <script src="https://kit.fontawesome.com/68b92f41c0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="../vista/css/estilosinicio.css">
     <link rel="stylesheet" type="text/css" href="../vista/css/estiloreporte.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.js"></script>
     
     <title>Reportes</title>
     <link rel="website icon" type="png" href="../vista/img/logo2.png">
