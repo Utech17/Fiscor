@@ -181,6 +181,15 @@ function SetMargins($left, $top, $right=null)
 	$this->rMargin = $right;
 }
 
+function Header() {
+	$this->Image('../vista/img/fondoreporte.png', 0, 0, 215); // imagen(archivo, png/jpg || x,y,tamaño)
+	$this->SetFont('Helvetica', 'B', 25);
+	$this->SetTextColor(255, 255, 255); // Cambiar color del texto a blanco
+	$this->SetXY(160, 30);
+	$this->SetTextColor(5, 188, 236);
+	$this->Ln(5);
+}
+
 function SetLeftMargin($margin)
 {
 	// Set left margin
@@ -357,11 +366,6 @@ function AddPage($orientation='', $size='', $rotation=0)
 	}
 	$this->TextColor = $tc;
 	$this->ColorFlag = $cf;
-}
-
-function Header()
-{
-	// To be implemented in your own inherited class
 }
 
 function Footer()

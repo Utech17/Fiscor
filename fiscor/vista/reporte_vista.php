@@ -33,7 +33,7 @@ if (isset($_GET['Volver'])) {
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.js"></script>
     
-    <title>Gastos</title>
+    <title>Reportes</title>
     <link rel="website icon" type="png" href="../vista/img/logo2.png">
 </head>
 <body>
@@ -50,46 +50,18 @@ if (isset($_GET['Volver'])) {
     <div class="container">
         <div class="contenedor-categoria px-6 pt-5">
             <h1 class="titulo"><b>Selecciona el reporte que deseas consultar</b></h1>
-            <form method="post" target="_blank">
-                <select id="imprimirReporte" name="imprimirReporte" class="select-menu" >
-                    <option value="proyectos">Proyectos</option>
-                    <option value="categorias">Categorías</option>
-                    <option value="elementos">Elementos</option>
-                    <option value="gsatos">Gastos</option>
-                    <option value="usuarios">Usuarios</option>
+            <form method="post" action="" target="_blank">
+                <select name="id_proyecto" id="proyecto" class="form-select w-auto d-inline-block">
+                    <?php foreach ($proyectos as $proyecto): ?>
+                        <option value="<?php echo $proyecto['ID_Proyecto']; ?>">
+                            <?php echo $proyecto['Nombre']; ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
                 <button type="submit" class="boton-impresion">
                     <i class="fas fa-print print-icon"></i> <b>Imprimir</b>
                 </button>
             </form>
-            <?php
-            if(isset($_POST['imprimirReporte'])) {
-            $seleccion = $_POST['imprimirReporte'];
-            switch($seleccion) {
-            case "productos":
-                header("Location: ../fpdf/productos.php");
-                exit();
-            case "entradas":
-                header("Location: ../fpdf/entradas.php");
-                exit();
-            case "salidas":
-                header("Location: ../fpdf/salidas.php");
-                exit();
-            case "proveedores":
-                header("Location: ../fpdf/proveedores.php");
-                exit();
-            case "clientes":
-                header("Location: ../fpdf/clientes.php");
-                exit();
-            case "entrada-salidas":
-                header("Location: ../fpdf/reporte_alumno2.php");
-                exit();
-            default:
-                // Manejo del caso por defecto
-                break;
-            }
-            }
-            ?>
             <div class="contenedor-imagen">
                 <img src="../vista/img/chicaimpresora.png" class="imagen1" alt="chica en una impresora">
             </div>
